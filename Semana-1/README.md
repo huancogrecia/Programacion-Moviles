@@ -16,6 +16,6 @@ Aplicación desarrollada en Android Studio con Kotlin y Jetpack Compose.
 
 
 ## Commits realizados
-1. Agrega saludo y curso
+1. Hola Mundo con Jetpack Compose
 2. Agrega información del Laboratorio 01
 3. Agrega información de TECSUP

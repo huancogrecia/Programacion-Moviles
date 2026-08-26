@@ -6,12 +6,13 @@ data class Producto(
     var cantidad: Int
 )
 
-
 fun calcularSubtotal(productos: List<Producto>): Double {
     var subtotal = 0.0
+
     for (p in productos) {
         subtotal += p.precio * p.cantidad
     }
+
     return subtotal
 }
 
@@ -26,12 +27,20 @@ fun calcularTotal(subtotal: Double, igv: Double): Double {
 fun mostrarDetalle(productos: List<Producto>) {
     println("--------- DETALLE DEL CARRITO---------")
     var i = 1
+
     for (p in productos) {
         val importe = p.precio * p.cantidad
-        println(String.format("%d. %-20s x%d S/ %8.2f",
-            i, p.nombre, p.cantidad, importe))
+
+        println(
+            String.format(
+                "%d. %-20s x%d S/ %8.2f",
+                i, p.nombre, p.cantidad, importe
+            )
+        )
+
         i++
     }
+
     println("---------------------------------------")
 }
 
@@ -62,6 +71,7 @@ fun main() {
     for (producto in carrito) {
         println("Producto agregado: ${producto.nombre}")
     }
+
     println()
     mostrarDetalle(carrito)
     println("Cantidad de productos: ${carrito.size}")
@@ -73,11 +83,19 @@ fun main() {
     val descuento = calcularDescuento(total)
     val totalFinal = total - descuento
 
+    val masCaro = carrito.maxByOrNull { it.precio }
+
     println(String.format("Subtotal:        S/ %8.2f", subtotal))
     println(String.format("IGV (18%%):      S/ %8.2f", igv))
     println(String.format("TOTAL A PAGAR:   S/ %8.2f", total))
-    println("Descuento: S/ $descuento")
-    println("Total final: S/ $totalFinal")
 
+    if (masCaro != null) {
+        println(
+            "Producto mas caro: ${masCaro.nombre} " +
+                    String.format("(S/ %.2f)", masCaro.precio)
+        )
+    }
 
+    println(String.format("Descuento aplicado: S/ %.2f", descuento))
+    println(String.format("TOTAL CON DESCUENTO: S/ %.2f", totalFinal))
 }

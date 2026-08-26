@@ -25,4 +25,12 @@ fun main() {
     for (producto in carrito) {
         println("Producto agregado: ${producto.nombre}")
     }
+
+    var subtotal = 0.0
+
+    for (producto in carrito) {
+        subtotal += producto.precio * producto.cantidad
+    }
+
+    val igv = subtotal * 0.18
 }

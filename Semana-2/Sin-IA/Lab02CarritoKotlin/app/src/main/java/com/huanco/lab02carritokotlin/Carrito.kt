@@ -52,6 +52,13 @@ fun calcularDescuento(total: Double): Double {
     }
 }
 
+fun buscarProducto(
+    productos: List<Producto>,
+    nombre: String
+): Producto? {
+    return productos.find { it.nombre == nombre }
+}
+
 fun main() {
     println("=========================================")
     println(" CARRITO DE COMPRAS - TIENDA TECSUP ")
@@ -98,4 +105,17 @@ fun main() {
 
     println(String.format("Descuento aplicado: S/ %.2f", descuento))
     println(String.format("TOTAL CON DESCUENTO: S/ %.2f", totalFinal))
+
+    println()
+    println("BUSCAR PRODUCTO")
+
+    val productoBuscado = buscarProducto(carrito, "Mouse Logitech")
+
+    if (productoBuscado != null) {
+        println("Producto encontrado: ${productoBuscado.nombre}")
+        println(String.format("Precio: S/ %.2f", productoBuscado.precio))
+        println("Cantidad: ${productoBuscado.cantidad}")
+    } else {
+        println("Producto no encontrado")
+    }
 }

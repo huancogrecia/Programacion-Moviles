@@ -53,7 +53,6 @@ class Carrito {
         return subtotal + igv
     }
 
-    // Calcula el descuento segun el total
     fun calcularDescuento(total: Double): Double {
         return when {
             total > 5000 -> total * 0.10
@@ -77,15 +76,42 @@ fun main() {
 
     println("===== CARRITO DE COMPRAS CON IA =====")
 
+    print("Ingrese nombre del cliente: ")
+    val nombreCliente = readLine() ?: ""
+
+    println("Cliente: $nombreCliente")
+    println()
+
     val carrito = Carrito()
 
-    val laptop = ProductoFisico("Laptop HP", 2500.0)
-    val mouse = ProductoFisico("Mouse Logitech", 45.5)
-    val curso = ProductoDigital("Curso de Kotlin", 150.0)
+    var continuar = "s"
 
-    carrito.agregarProducto(laptop)
-    carrito.agregarProducto(mouse)
-    carrito.agregarProducto(curso)
+    while (continuar.lowercase() == "s") {
+
+        print("Ingrese nombre del producto: ")
+        val nombre = readLine() ?: ""
+
+        print("Ingrese precio: ")
+        val precio = readLine()?.toDoubleOrNull() ?: 0.0
+
+        print("Ingrese tipo (1-Fisico / 2-Digital): ")
+        val tipo = readLine() ?: ""
+
+        if (tipo == "1") {
+            carrito.agregarProducto(
+                ProductoFisico(nombre, precio)
+            )
+        } else {
+            carrito.agregarProducto(
+                ProductoDigital(nombre, precio)
+            )
+        }
+
+        print("¿Desea agregar otro producto? (s/n): ")
+        continuar = readLine() ?: "n"
+
+        println()
+    }
 
     carrito.mostrarProductos()
 
@@ -98,6 +124,7 @@ fun main() {
     val totalFinal = total - descuento
 
     println("----------- RESUMEN -----------")
+    println("Cliente: $nombreCliente")
     println(String.format("Subtotal:    S/ %.2f", subtotal))
     println(String.format("IGV (18%%):   S/ %.2f", igv))
     println(String.format("Total:       S/ %.2f", total))

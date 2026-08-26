@@ -6,29 +6,24 @@ Grecia Huanco
 ## Descripción
 Este proyecto implementa un carrito de compras en Kotlin utilizando Programación Orientada a Objetos.
 
-El programa permite agregar productos físicos y digitales, mostrar los productos del carrito y calcular el subtotal, IGV, descuento y total final.
+## Prompt utilizado con IA
+Desarrollar un carrito de compras sencillo en Kotlin aplicando Programación Orientada a Objetos.
 
-## Programación Orientada a Objetos
+- Crear una clase general Producto.
+- Tener productos físicos y digitales.
+- Aplicar abstracción, herencia, encapsulamiento y polimorfismo.
+- Permitir agregar productos a un carrito.
+- Mostrar los productos registrados.
+- Calcular el subtotal.
+- Calcular el IGV del 18%.
+- Calcular el total.
+- Aplicar descuentos usando when:
+  - Mayor a 5000: 10%.
+  - Mayor a 3000: 5%.
+  - En otros casos: sin descuento.
+- Mostrar el total final.
 
-### Abstracción
-Se utiliza la clase abstracta `Producto`, que contiene las características comunes de los productos como nombre y precio.
-
-### Herencia
-Las clases `ProductoFisico` y `ProductoDigital` heredan de la clase `Producto`.
-
-### Encapsulamiento
-La clase `Carrito` contiene una lista privada de productos mediante `private`, evitando que sea modificada directamente desde fuera de la clase.
-
-### Polimorfismo
-Los productos físicos y digitales implementan de manera diferente la función `mostrarTipo()` mediante `override`.
-
-## Funciones principales
-- Agregar productos al carrito.
-- Mostrar productos físicos y digitales.
-- Calcular subtotal.
-- Calcular IGV del 18%.
-- Calcular descuento utilizando `when`.
-- Calcular el total final.
+El resultado debe ser un programa funcional en Kotlin que muestre los productos del carrito, diferencie productos físicos y digitales, realice los cálculos correspondientes y permita identificar claramente los cuatro pilares de la Programación Orientada a Objetos.
 
 ## Resultado de ejecución
 

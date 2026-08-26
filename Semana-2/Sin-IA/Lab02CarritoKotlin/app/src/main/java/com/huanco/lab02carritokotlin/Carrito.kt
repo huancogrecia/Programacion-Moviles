@@ -16,4 +16,13 @@ fun main() {
 
     println("Cliente: $nombreCliente")
     println()
+
+    carrito.add(Producto("Laptop HP", 2500.0, 1))
+    carrito.add(Producto("Mouse Logitech", 45.5, 2))
+    carrito.add(Producto("Teclado Mecanico", 180.0, 1))
+    carrito.add(Producto("Monitor Samsung", 850.0, 1))
+
+    for (producto in carrito) {
+        println("Producto agregado: ${producto.nombre}")
+    }
 }

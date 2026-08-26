@@ -7,7 +7,6 @@ abstract class Producto(
     abstract fun mostrarTipo(): String
 }
 
-
 class ProductoFisico(
     nombre: String,
     precio: Double
@@ -27,41 +26,17 @@ class ProductoDigital(
         return "Producto digital"
     }
 }
+
 class Carrito {
+
     private val productos = mutableListOf<Producto>()
 
     fun agregarProducto(producto: Producto) {
         productos.add(producto)
     }
 
-    fun calcularSubtotal(): Double {
-        var subtotal = 0.0
-
-        for (producto in productos) {
-            subtotal += producto.precio
-        }
-
-        return subtotal
-    }
-
-    fun calcularIGV(subtotal: Double): Double {
-        return subtotal * 0.18
-    }
-
-    fun calcularTotal(subtotal: Double, igv: Double): Double {
-        return subtotal + igv
-    }
-
-    fun calcularDescuento(total: Double): Double {
-        return when {
-            total > 5000 -> total * 0.10
-            total > 3000 -> total * 0.05
-            else -> 0.0
-        }
-    }
-
     fun mostrarProductos() {
-        println("-----PRODUCTOS DEL CARRITO----")
+        println("----- PRODUCTOS DEL CARRITO -----")
 
         for (producto in productos) {
             println(
@@ -69,19 +44,11 @@ class Carrito {
             )
         }
     }
-
 }
 
-
-
 fun main() {
-    println("=====CARRITO DE COMPRAS CON IA - TECSUP=====")
 
-    val nombreCliente = "Grecia Huanco"
-
-    println("Cliente: $nombreCliente")
-
-    println()
+    println("===== CARRITO DE COMPRAS CON IA =====")
 
     val carrito = Carrito()
 
@@ -94,19 +61,4 @@ fun main() {
     carrito.agregarProducto(curso)
 
     carrito.mostrarProductos()
-    println()
-
-    val subtotal = carrito.calcularSubtotal()
-    val igv = carrito.calcularIGV(subtotal)
-    val total = carrito.calcularTotal(subtotal, igv)
-    val descuento = carrito.calcularDescuento(total)
-    val totalFinal = total - descuento
-
-    println("----------- RESUMEN -----------")
-    println(String.format("Subtotal:          S/ %8.2f", subtotal))
-    println(String.format("IGV (18%%):         S/ %8.2f", igv))
-    println(String.format("Total:             S/ %8.2f", total))
-    println(String.format("Descuento:         S/ %8.2f", descuento))
-    println(String.format("TOTAL FINAL:       S/ %8.2f", totalFinal))
 }
-

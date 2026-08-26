@@ -27,4 +27,5 @@ El resultado debe ser un programa funcional en Kotlin que muestre los productos 
 
 ## Resultado de ejecución
 
-![Resultado del Laboratorio 02 con IA](lab2_Huanco_IA.png)
+<img width="962" height="447" alt="Captura de pantalla 2026-08-26 a las 5 41 59 p  m" src="https://github.com/user-attachments/assets/fcb209fc-4c66-40c0-a710-7ce64d09c3a6" />
+

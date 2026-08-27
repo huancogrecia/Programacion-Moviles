@@ -21,10 +21,3 @@ También muestra el detalle de los productos con columnas alineadas e identifica
 
 ![Resultado del Laboratorio 02](lab2_Huanco.png)
 
-## Diferencia entre val y var
-
-En Kotlin, `val` se utiliza para declarar una variable cuyo valor no puede ser reasignado después de su inicialización.
-
-En cambio, `var` se utiliza cuando el valor de una variable puede cambiar durante la ejecución del programa.
-
-En este laboratorio se utiliza `val` para valores que no necesitan cambiar, como el nombre y el precio de un producto, y `var` para valores que pueden modificarse, como la cantidad de un producto.

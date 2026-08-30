@@ -5,8 +5,22 @@ fun main() {
     println("***CONTROL DE PRESTAMO***")
 
 
-    println("Ingrese tItulo del libro:")
+    println("Ingrese titulo del libro:")
     val titulo = readln()
+
+    println()
+    println("Seleccione usuario:")
+    println("1. Alumno")
+    println("2. Docente")
+
+    val opcionUsuario = readln().toInt()
+
+    val usuario = when (opcionUsuario) {
+        1 -> "Alumno"
+        2 -> "Docente"
+        else -> "No valido"
+    }
+
 
     println("Ingrese fecha de prestamo:")
     val fechaPrestamo = readln()
@@ -24,4 +38,5 @@ fun main() {
     println("Fecha prestamo: $fechaPrestamo")
     println("Fecha entrega: $fechaEntrega")
     println("Fecha devolucion: $fechaDevolucion")
+    println("Usuario: $usuario")
 }

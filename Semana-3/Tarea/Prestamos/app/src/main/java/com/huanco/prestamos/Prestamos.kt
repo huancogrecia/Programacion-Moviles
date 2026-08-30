@@ -31,6 +31,18 @@ fun main() {
     println("Ingrese fecha de devolucion:")
     val fechaDevolucion = readln()
 
+    val diaEntrega = fechaEntrega.substringBefore("/").toInt()
+    val diaDevolucion = fechaDevolucion.substringBefore("/").toInt()
+
+    var diasAtraso = diaDevolucion - diaEntrega
+
+    if (diasAtraso < 0) {
+        diasAtraso = 0
+    }
+
+    val multaPorDia = 1.50
+    val multaTotal = diasAtraso * multaPorDia
+
 
     println()
     println("***DATOS REGISTRADOS***")
@@ -39,4 +51,7 @@ fun main() {
     println("Fecha entrega: $fechaEntrega")
     println("Fecha devolucion: $fechaDevolucion")
     println("Usuario: $usuario")
+    println("Dias de atraso: $diasAtraso")
+    println("Multa por dia: S/ $multaPorDia")
+    println("Multa total: S/ $multaTotal")
 }

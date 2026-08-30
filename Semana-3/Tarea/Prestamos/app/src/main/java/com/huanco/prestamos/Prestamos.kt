@@ -43,6 +43,12 @@ fun main() {
     val multaPorDia = 1.50
     val multaTotal = diasAtraso * multaPorDia
 
+    val estado = if (diasAtraso > 0) {
+        "Devuelto con $diasAtraso dias de atraso"
+    } else {
+        "Devuelto a tiempo"
+    }
+
 
     println()
     println("***DATOS REGISTRADOS***")
@@ -51,6 +57,7 @@ fun main() {
     println("Fecha entrega: $fechaEntrega")
     println("Fecha devolucion: $fechaDevolucion")
     println("Usuario: $usuario")
+    println("Estado: $estado")
     println("Dias de atraso: $diasAtraso")
     println("Multa por dia: S/ $multaPorDia")
     println("Multa total: S/ $multaTotal")

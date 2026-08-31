@@ -11,7 +11,8 @@ Permite seleccionar el tipo de usuario (Alumno o Docente), registrar las fechas 
 - Estado de la devolución
 
 ## Evidencia
-<img width="561" height="767" alt="image" src="https://github.com/user-attachments/assets/3eedeb7e-b8e7-4dca-8364-1047ae8cab66" />
+<img width="628" height="716" alt="image" src="https://github.com/user-attachments/assets/ae09537b-04bf-4e17-8639-e2014bdd8741" />
+
 
 
 

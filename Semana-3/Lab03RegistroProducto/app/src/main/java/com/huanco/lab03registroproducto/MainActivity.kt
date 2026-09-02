@@ -25,6 +25,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.huanco.lab03registroproducto.ui.theme.Lab03RegistroProductoTheme
 
@@ -132,6 +133,13 @@ fun PantallaRegistro(modifier: Modifier = Modifier) {
                     )
                 }
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                text = "✔ Producto registrado correctamente",
+                color = Color(0xFF2E7D32)
+            )
         }
     }
 }

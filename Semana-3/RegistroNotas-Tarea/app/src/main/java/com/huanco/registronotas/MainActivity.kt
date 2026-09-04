@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.huanco.registronotas.ui.theme.RegistroNotasTheme
+import kotlin.math.roundToInt
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,6 +56,7 @@ fun PantallaRegistroNotas(modifier: Modifier = Modifier) {
 
     var redondearPromedio by remember { mutableStateOf(false) }
     var notasConfirmadas by remember { mutableStateOf(false) }
+    var promedioFinal by remember { mutableStateOf(0f) }
 
     Column(
         modifier = modifier
@@ -205,11 +207,43 @@ fun PantallaRegistroNotas(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = { },
+            onClick = {
+                promedioFinal =
+                    notaFundamentos * 0.20f +
+                            notaPoo * 0.25f +
+                            notaMoviles * 0.30f +
+                            notaBaseDatos * 0.25f },
             enabled = notasConfirmadas,
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(text = "CALCULAR PROMEDIO")
         }
+
+        val promedioEvaluado = if (redondearPromedio) {
+            promedioFinal.roundToInt().toFloat()
+        } else {
+            promedioFinal
+        }
+
+        val observacion = when {
+            promedioEvaluado >= 17 -> "EXCELENTE"
+            promedioEvaluado >= 13 -> "APROBADO"
+            promedioEvaluado >= 10 -> "EN RECUPERACIÓN"
+            else -> "DESAPROBADO"
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = if (redondearPromedio) {
+                "Promedio final: ${promedioFinal.roundToInt()}"
+            } else {
+                "Promedio final: %.2f".format(promedioFinal)
+            }
+        )
+
+        Text(
+            text = "Observación: $observacion"
+        )
     }
 }

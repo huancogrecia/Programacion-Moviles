@@ -15,11 +15,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.Switch
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.huanco.registronotas.ui.theme.RegistroNotasTheme
@@ -48,6 +52,9 @@ fun PantallaRegistroNotas(modifier: Modifier = Modifier) {
     var notaPoo by remember { mutableStateOf(0f) }
     var notaMoviles by remember { mutableStateOf(0f) }
     var notaBaseDatos by remember { mutableStateOf(0f) }
+
+    var redondearPromedio by remember { mutableStateOf(false) }
+    var notasConfirmadas by remember { mutableStateOf(false) }
 
     Column(
         modifier = modifier
@@ -163,5 +170,46 @@ fun PantallaRegistroNotas(modifier: Modifier = Modifier) {
             steps = 19,
             modifier = Modifier.fillMaxWidth()
         )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = "Redondear promedio final",
+                modifier = Modifier.weight(1f)
+            )
+
+            Switch(
+                checked = redondearPromedio,
+                onCheckedChange = { redondearPromedio = it }
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Checkbox(
+                checked = notasConfirmadas,
+                onCheckedChange = { notasConfirmadas = it }
+            )
+
+            Text(
+                text = "Confirmo que las notas son correctas"
+            )
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(
+            onClick = { },
+            enabled = notasConfirmadas,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(text = "CALCULAR PROMEDIO")
+        }
     }
 }

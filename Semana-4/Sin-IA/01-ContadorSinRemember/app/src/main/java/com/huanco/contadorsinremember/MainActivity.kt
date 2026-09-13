@@ -3,45 +3,33 @@ package com.huanco.contadorsinremember
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.huanco.contadorsinremember.ui.theme.ContadorSinRememberTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+
         setContent {
-            ContadorSinRememberTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+            MaterialTheme {
+                ContadorRoto()
             }
         }
     }
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+fun ContadorRoto() {
+    var contador = 0 // se resetea a 0 en cada recomposición
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    ContadorSinRememberTheme {
-        Greeting("Android")
+    Column {
+        Text("Contador: $contador")
+
+        Button(onClick = { contador++ }) { // No causa recomposición
+            Text("Incrementar")
+        }
     }
 }

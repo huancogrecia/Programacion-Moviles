@@ -17,6 +17,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.huanco.temperaturedisplay.ui.theme.TemperatureDisplayTheme
 
@@ -39,9 +40,15 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun TemperatureDisplay(modifier: Modifier = Modifier) {
     var temperatura by remember { mutableStateOf(20) }
+    val colorTemperatura = when {
+        temperatura > 30 -> Color.Red
+        temperatura < 10 -> Color.Blue
+        else -> Color.Unspecified
+    }
     Column(modifier = modifier) {
         Text(
-            text = "Temperatura: $temperatura °C"
+            text = "Temperatura: $temperatura °C",
+            color = colorTemperatura
         )
         Row {
             Button(

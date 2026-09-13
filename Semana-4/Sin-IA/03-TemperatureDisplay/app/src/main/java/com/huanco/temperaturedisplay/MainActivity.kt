@@ -9,6 +9,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.huanco.temperaturedisplay.ui.theme.TemperatureDisplayTheme
@@ -20,8 +24,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             TemperatureDisplayTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
+                    TemperatureDisplay(
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
@@ -31,17 +34,18 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
+fun TemperatureDisplay(modifier: Modifier = Modifier) {
+    var temperatura by remember { mutableStateOf(20) }
     Text(
-        text = "Hello $name!",
+        text = "Temperatura: $temperatura °C",
         modifier = modifier
     )
 }
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun TemperatureDisplayPreview() {
     TemperatureDisplayTheme {
-        Greeting("Android")
+        TemperatureDisplay()
     }
 }

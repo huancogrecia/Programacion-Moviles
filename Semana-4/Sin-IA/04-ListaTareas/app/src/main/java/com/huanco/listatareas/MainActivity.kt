@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
@@ -131,6 +133,31 @@ fun PantallaTareas() {
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Agregar tarea")
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = "Total de tareas: ${listaTareas.size}",
+            style = MaterialTheme.typography.titleMedium
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+        LazyColumn {
+            items(listaTareas, key = { it.id }) { tarea ->
+                ItemTarea(
+                    tarea = tarea,
+                    onEliminar = {
+                        listaTareas.remove(tarea)
+                    },
+                    onCambiarEstado = { completada ->
+                        val index = listaTareas.indexOf(tarea)
+                        if (index != -1) {
+                            listaTareas[index] =
+                                listaTareas[index].copy(completada = completada)
+                        }
+                    }
+                )
+            }
         }
     }
 }

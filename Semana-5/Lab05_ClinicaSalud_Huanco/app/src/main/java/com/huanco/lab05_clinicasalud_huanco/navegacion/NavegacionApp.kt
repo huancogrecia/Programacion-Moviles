@@ -1,0 +1,52 @@
+package com.huanco.lab05_clinicasalud_huanco.navegacion
+
+import androidx.compose.runtime.Composable
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.huanco.lab05_clinicasalud_huanco.pantallas.PantallaInicio
+import com.huanco.lab05_clinicasalud_huanco.pantallas.PantallaPerfilMedico
+
+@Composable
+fun NavegacionApp() {
+
+    val navController = rememberNavController()
+
+    NavHost(
+        navController = navController,
+        startDestination = "inicio"
+    ) {
+
+        composable("inicio") {
+
+            PantallaInicio(
+                onMedicoClick = { nombre, especialidad, calificacion ->
+
+                    navController.navigate(
+                        "perfil/$nombre/$especialidad/$calificacion"
+                    )
+                }
+            )
+        }
+
+        composable(
+            "perfil/{nombre}/{especialidad}/{calificacion}"
+        ) { backStackEntry ->
+
+            val nombre =
+                backStackEntry.arguments?.getString("nombre") ?: ""
+
+            val especialidad =
+                backStackEntry.arguments?.getString("especialidad") ?: ""
+
+            val calificacion =
+                backStackEntry.arguments?.getString("calificacion") ?: ""
+
+            PantallaPerfilMedico(
+                nombre = nombre,
+                especialidad = especialidad,
+                calificacion = calificacion
+            )
+        }
+    }
+}

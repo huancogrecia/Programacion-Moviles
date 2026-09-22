@@ -15,7 +15,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun PantallaInicio() {
+fun PantallaInicio(
+    onMedicoClick: (String, String, String) -> Unit
+) {
 
     val especialidades = listOf(
         "Cardiología",
@@ -23,9 +25,9 @@ fun PantallaInicio() {
     )
 
     val medicos = listOf(
-        "Dra. Ana Torres - Cardiología - 4.8",
-        "Dr. Luis Vega - Pediatría - 4.7",
-        "Dra. Rosa Díaz - Dermatología - 4.2"
+        Triple("Dra. Ana Torres", "Cardiología", "4.8"),
+        Triple("Dr. Luis Vega", "Pediatría", "4.7"),
+        Triple("Dra. Rosa Díaz", "Dermatología", "4.2")
     )
 
     Column(
@@ -65,10 +67,20 @@ fun PantallaInicio() {
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(medicos) { medico ->
-                Text(
-                    text = medico,
-                    modifier = Modifier.padding(8.dp)
-                )
+
+                Button(
+                    onClick = {
+                        onMedicoClick(
+                            medico.first,
+                            medico.second,
+                            medico.third
+                        )
+                    }
+                ) {
+                    Text(
+                        text = "${medico.first} - ${medico.second} - ${medico.third}"
+                    )
+                }
             }
         }
     }

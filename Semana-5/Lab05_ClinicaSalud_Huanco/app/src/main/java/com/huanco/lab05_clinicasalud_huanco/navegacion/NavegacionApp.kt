@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.huanco.lab05_clinicasalud_huanco.pantallas.PantallaAgendarCita
 import com.huanco.lab05_clinicasalud_huanco.pantallas.PantallaInicio
 import com.huanco.lab05_clinicasalud_huanco.pantallas.PantallaPerfilMedico
 
@@ -45,8 +46,14 @@ fun NavegacionApp() {
             PantallaPerfilMedico(
                 nombre = nombre,
                 especialidad = especialidad,
-                calificacion = calificacion
+                calificacion = calificacion,
+                onAgendarClick = {
+                    navController.navigate("agendar")
+                }
             )
+        }
+        composable("agendar") {
+            PantallaAgendarCita()
         }
     }
 }

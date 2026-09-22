@@ -16,7 +16,8 @@ import androidx.compose.ui.unit.dp
 fun PantallaPerfilMedico(
     nombre: String,
     especialidad: String,
-    calificacion: String
+    calificacion: String,
+    onAgendarClick: () -> Unit
 ) {
 
     Column(
@@ -45,7 +46,7 @@ fun PantallaPerfilMedico(
         )
 
         Button(
-            onClick = { },
+            onClick = onAgendarClick,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 32.dp)

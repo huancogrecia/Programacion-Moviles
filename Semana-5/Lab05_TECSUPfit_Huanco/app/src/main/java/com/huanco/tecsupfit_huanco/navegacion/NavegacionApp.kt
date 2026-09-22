@@ -9,6 +9,7 @@ import androidx.navigation.navArgument
 import com.huanco.tecsupfit_huanco.pantallas.PantallaConfirmacion
 import com.huanco.tecsupfit_huanco.pantallas.PantallaDetalle
 import com.huanco.tecsupfit_huanco.pantallas.PantallaInicio
+import com.huanco.tecsupfit_huanco.pantallas.PantallaReservas
 
 @Composable
 fun NavegacionApp() {
@@ -59,8 +60,13 @@ fun NavegacionApp() {
 
             PantallaConfirmacion(
                 claseId = claseId,
-                onVerReservas = { }
+                onVerReservas = {
+                    navController.navigate(Pantalla.Reservas.ruta)
+                }
             )
+        }
+        composable(Pantalla.Reservas.ruta) {
+            PantallaReservas()
         }
     }
 }

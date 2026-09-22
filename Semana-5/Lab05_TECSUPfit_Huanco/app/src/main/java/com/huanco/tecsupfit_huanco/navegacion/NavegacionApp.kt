@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.huanco.tecsupfit_huanco.pantallas.PantallaConfirmacion
 import com.huanco.tecsupfit_huanco.pantallas.PantallaDetalle
 import com.huanco.tecsupfit_huanco.pantallas.PantallaInicio
 
@@ -38,7 +39,27 @@ fun NavegacionApp() {
 
             PantallaDetalle(
                 claseId = claseId,
-                onReservar = { }
+                onReservar = {
+                    navController.navigate(
+                        Pantalla.Confirmacion.crearRuta(claseId)
+                    )
+                }
+            )
+        }
+        composable(
+            route = Pantalla.Confirmacion.ruta,
+            arguments = listOf(
+                navArgument("claseId") {
+                    type = NavType.IntType
+                }
+            )
+        ) { backStackEntry ->
+
+            val claseId = backStackEntry.arguments?.getInt("claseId") ?: 1
+
+            PantallaConfirmacion(
+                claseId = claseId,
+                onVerReservas = { }
             )
         }
     }

@@ -1,5 +1,6 @@
 package com.huanco.tecsupfit_huanco.pantallas
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -22,7 +23,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun PantallaInicio() {
+fun PantallaInicio(
+    onClaseClick: (Int) -> Unit
+) {
 
     var filtroSeleccionado by remember {
         mutableStateOf("Hoy")
@@ -31,9 +34,9 @@ fun PantallaInicio() {
     val filtros = listOf("Hoy", "Esta semana")
 
     val clases = listOf(
-        "Yoga funcional - 5:00 pm - Sala 2 - 45 min",
-        "Cross Training - 6:00 pm - Sala 1 - 45 min",
-        "Spinning - 7:00 pm - Sala 3 - 50 min"
+        1 to "Yoga funcional - 5:00 pm - Sala 2 - 45 min",
+        2 to "Cross Training - 6:00 pm - Sala 1 - 45 min",
+        3 to "Spinning - 7:00 pm - Sala 3 - 50 min"
     )
 
     Column(
@@ -103,13 +106,18 @@ fun PantallaInicio() {
             ),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
+
             items(clases) { clase ->
 
                 Card(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            onClaseClick(clase.first)
+                        }
                 ) {
                     Text(
-                        text = clase,
+                        text = clase.second,
                         modifier = Modifier.padding(20.dp)
                     )
                 }

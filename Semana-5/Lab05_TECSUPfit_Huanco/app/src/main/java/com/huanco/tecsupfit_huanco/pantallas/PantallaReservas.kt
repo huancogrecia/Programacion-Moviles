@@ -20,8 +20,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun PantallaReservas() {
-
+fun PantallaReservas(
+    clasesReservadasIds: List<Int> = emptyList()
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -36,25 +37,54 @@ fun PantallaReservas() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Primera tarjeta: Cross Training
-        TarjetaReservaItem(
-            titulo = "Cross Training",
-            horarioInfo = "6:00 pm - Sala 1",
-            estado = "Confirmada",
-            emoji = "🏋️‍♂️",
-            esActiva = true
-        )
+        // Si la lista de IDs dinámicos contiene las clases, las mostramos dinámicamente.
+        // O si está vacía (comportamiento por defecto inicial), mostramos las clases predefinidas de base.
+        
+        val mostrarYoga = clasesReservadasIds.contains(1) || clasesReservadasIds.isEmpty()
+        val mostrarCross = clasesReservadasIds.contains(2) || clasesReservadasIds.isEmpty()
+        val mostrarSpinning = clasesReservadasIds.contains(3)
 
-        Spacer(modifier = Modifier.height(12.dp))
+        if (mostrarCross) {
+            TarjetaReservaItem(
+                titulo = "Cross Training",
+                horarioInfo = "6:00 pm - Sala 1",
+                estado = "Confirmada",
+                emoji = "🏋️‍♂️",
+                esActiva = true
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+        }
 
-        // Segunda tarjeta: Yoga Funcional
-        TarjetaReservaItem(
-            titulo = "Yoga funcional",
-            horarioInfo = "5:00 pm - Sala 2",
-            estado = "Completada",
-            emoji = "🧘",
-            esActiva = false
-        )
+        if (mostrarYoga) {
+            TarjetaReservaItem(
+                titulo = "Yoga funcional",
+                horarioInfo = "5:00 pm - Sala 2",
+                estado = if (clasesReservadasIds.contains(1)) "Confirmada" else "Completada",
+                emoji = "🧘",
+                esActiva = clasesReservadasIds.contains(1)
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+        }
+
+        if (mostrarSpinning) {
+            TarjetaReservaItem(
+                titulo = "Spinning",
+                horarioInfo = "7:00 pm - Sala 3",
+                estado = "Confirmada",
+                emoji = "🚴",
+                esActiva = true
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+        }
+        
+        if (!mostrarYoga && !mostrarCross && !mostrarSpinning) {
+            Text(
+                text = "No tienes clases reservadas aún.",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(top = 8.dp)
+            )
+        }
     }
 }
 
@@ -107,12 +137,12 @@ fun TarjetaReservaItem(
             // Badge de estado personalizado
             Surface(
                 shape = RoundedCornerShape(6.dp),
-                color = if (esActiva) MaterialTheme.colorScheme.primary.copy(alpha = 0.15f) else MaterialTheme.colorScheme.surfaceVariant
+                color = if (esActiva || estado == "Confirmada") MaterialTheme.colorScheme.primary.copy(alpha = 0.15f) else MaterialTheme.colorScheme.surfaceVariant
             ) {
                 Text(
                     text = estado,
                     style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold),
-                    color = if (esActiva) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = if (esActiva || estado == "Confirmada") MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
                 )
             }

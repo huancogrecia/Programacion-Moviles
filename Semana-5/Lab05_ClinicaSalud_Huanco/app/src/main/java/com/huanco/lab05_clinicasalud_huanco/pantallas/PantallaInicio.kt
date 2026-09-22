@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
@@ -21,6 +22,12 @@ fun PantallaInicio() {
         "Pediatría"
     )
 
+    val medicos = listOf(
+        "Dra. Ana Torres - Cardiología - 4.8",
+        "Dr. Luis Vega - Pediatría - 4.7",
+        "Dra. Rosa Díaz - Dermatología - 4.2"
+    )
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -30,7 +37,7 @@ fun PantallaInicio() {
         Text(text = "Clínica Salud+")
 
         Text(
-            text = "Hola, Juan",
+            text = "Hola, Grecia Huanco",
             modifier = Modifier.padding(top = 8.dp, bottom = 16.dp)
         )
 
@@ -41,12 +48,27 @@ fun PantallaInicio() {
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(especialidades) { especialidad ->
-
                 Button(
                     onClick = { }
                 ) {
                     Text(text = especialidad)
                 }
+            }
+        }
+
+        Text(
+            text = "Médicos disponibles",
+            modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
+        )
+
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            items(medicos) { medico ->
+                Text(
+                    text = medico,
+                    modifier = Modifier.padding(8.dp)
+                )
             }
         }
     }

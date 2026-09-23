@@ -5,6 +5,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.huanco.lab05_clinicasalud_huanco.pantallas.PantallaAgendarCita
+import com.huanco.lab05_clinicasalud_huanco.pantallas.PantallaConfirmacion
 import com.huanco.lab05_clinicasalud_huanco.pantallas.PantallaInicio
 import com.huanco.lab05_clinicasalud_huanco.pantallas.PantallaPerfilMedico
 
@@ -48,12 +49,50 @@ fun NavegacionApp() {
                 especialidad = especialidad,
                 calificacion = calificacion,
                 onAgendarClick = {
-                    navController.navigate("agendar")
+                    navController.navigate("agendar/$nombre")
                 }
             )
         }
-        composable("agendar") {
-            PantallaAgendarCita()
+
+        composable(
+            "agendar/{medico}"
+        ) { backStackEntry ->
+
+            val medico =
+                backStackEntry.arguments?.getString("medico") ?: ""
+
+            PantallaAgendarCita(
+                medico = medico,
+                onContinuarClick = { nombre, fecha, horario ->
+
+                    navController.navigate(
+                        "confirmacion/$nombre/$fecha/$horario"
+                    )
+                }
+            )
+        }
+
+        composable(
+            "confirmacion/{medico}/{fecha}/{horario}"
+        ) { backStackEntry ->
+
+            val medico =
+                backStackEntry.arguments?.getString("medico") ?: ""
+
+            val fecha =
+                backStackEntry.arguments?.getString("fecha") ?: ""
+
+            val horario =
+                backStackEntry.arguments?.getString("horario") ?: ""
+
+            PantallaConfirmacion(
+                medico = medico,
+                fecha = fecha,
+                horario = horario,
+                onVolverInicio = {
+                    navController.navigate("inicio")
+                }
+            )
         }
     }
 }

@@ -16,7 +16,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun PantallaAgendarCita() {
+fun PantallaAgendarCita(
+    medico: String,
+    onContinuarClick: (String, String, String) -> Unit
+) {
 
     val fechas = listOf(
         "Lunes 28",
@@ -91,7 +94,17 @@ fun PantallaAgendarCita() {
         }
 
         Button(
-            onClick = { },
+            onClick = {
+                if (fechaSeleccionada.isNotEmpty() &&
+                    horarioSeleccionado.isNotEmpty()
+                ) {
+                    onContinuarClick(
+                        medico,
+                        fechaSeleccionada,
+                        horarioSeleccionado
+                    )
+                }
+            },
             modifier = Modifier.padding(top = 24.dp)
         ) {
             Text(text = "Continuar")

@@ -31,3 +31,36 @@
 
 ### Perfil
 <img width="229" height="500" alt="image" src="https://github.com/user-attachments/assets/fc577f96-8485-42df-95a6-6e4129c19c30" />
+
+## Preguntas
+
+### 1. ¿Cómo llega la clase elegida en Inicio hasta la pantalla de confirmación?
+
+Cuando elijo una clase en Inicio, sus datos pasan a la pantalla donde se muestra el detalle de la clase. Después continúo con la reserva, selecciono el horario y finalmente esos datos llegan a la pantalla de confirmación, donde se muestra el resumen.
+
+La ruta que sigue es:
+
+Inicio → Detalle de clase → Reserva → Confirmación.
+
+Los datos están definidos en el código y se van pasando entre las pantallas mediante la navegación.
+
+
+### 2. ¿Cómo sabe el bottomBar cuál ícono resaltar en cada pantalla?
+
+El bottomBar revisa en qué ruta o pantalla me encuentro. Cada opción tiene una ruta y, cuando esa ruta coincide con la pantalla actual, esa opción aparece seleccionada.
+
+Así se puede saber visualmente si estoy en Inicio, Mis Reservas, Rutinas o Perfil.
+
+
+### 3. ¿Por qué la selección del horario se comporta como un RadioButton, aunque visualmente sean "chips"?
+
+Porque solo puedo elegir un horario a la vez. Cuando selecciono otro horario, este reemplaza al que había elegido antes.
+
+Entonces, aunque visualmente parezcan chips, funcionan como un RadioButton porque solo permiten tener una opción seleccionada.
+
+
+### 4. ¿Qué tuviste que corregir del código que te generó la IA para tu mejora de la Fase 2?
+
+Tuve que revisar que los cambios hechos con IA no afectaran la navegación ni lo que ya funcionaba en mi aplicación. También verifiqué que no agregara cosas más avanzadas que todavía no hemos aprendido.
+
+Además, hice que cuando reserve una clase esta pueda aparecer en Mis Reservas durante el uso de la aplicación. Como estamos trabajando con datos estáticos y no usamos una base de datos, la información no queda guardada cuando se cierra la aplicación.

@@ -6,7 +6,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.huanco.lab05_clinicasalud_huanco.pantallas.PantallaAgendarCita
 import com.huanco.lab05_clinicasalud_huanco.pantallas.PantallaConfirmacion
+import com.huanco.lab05_clinicasalud_huanco.pantallas.PantallaHistorialMedico
 import com.huanco.lab05_clinicasalud_huanco.pantallas.PantallaInicio
+import com.huanco.lab05_clinicasalud_huanco.pantallas.PantallaMisCitas
 import com.huanco.lab05_clinicasalud_huanco.pantallas.PantallaPerfilMedico
 
 @Composable
@@ -27,6 +29,12 @@ fun NavegacionApp() {
                     navController.navigate(
                         "perfil/$nombre/$especialidad/$calificacion"
                     )
+                },
+                onMisCitasClick = {
+                    navController.navigate("misCitas")
+                },
+                onHistorialClick = {
+                    navController.navigate("historial")
                 }
             )
         }
@@ -93,6 +101,13 @@ fun NavegacionApp() {
                     navController.navigate("inicio")
                 }
             )
+        }
+        composable("misCitas") {
+            PantallaMisCitas()
+        }
+
+        composable("historial") {
+            PantallaHistorialMedico()
         }
     }
 }

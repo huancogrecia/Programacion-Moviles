@@ -122,7 +122,11 @@ fun NavegacionApp() {
             )
         }
         composable("perfilUsuario") {
-            PantallaPerfil()
+            PantallaPerfil(
+                onRegresarClick = {
+                    navController.popBackStack()
+                }
+            )
         }
     }
 }

@@ -27,7 +27,8 @@ import kotlinx.coroutines.launch
 fun PantallaInicio(
     onMedicoClick: (String, String, String) -> Unit,
     onMisCitasClick: () -> Unit,
-    onHistorialClick: () -> Unit
+    onHistorialClick: () -> Unit,
+    onPerfilClick: () -> Unit
 ) {
 
     val especialidades = listOf(
@@ -82,6 +83,13 @@ fun PantallaInicio(
                     }
                 ) {
                     Text(text = "Historial médico")
+                }
+                TextButton(
+                    onClick = {
+                        onPerfilClick()
+                    }
+                ) {
+                    Text(text = "Perfil")
                 }
             }
         }

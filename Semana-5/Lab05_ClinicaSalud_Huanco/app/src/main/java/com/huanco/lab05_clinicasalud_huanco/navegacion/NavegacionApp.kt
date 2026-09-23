@@ -10,6 +10,7 @@ import com.huanco.lab05_clinicasalud_huanco.pantallas.PantallaHistorialMedico
 import com.huanco.lab05_clinicasalud_huanco.pantallas.PantallaInicio
 import com.huanco.lab05_clinicasalud_huanco.pantallas.PantallaMisCitas
 import com.huanco.lab05_clinicasalud_huanco.pantallas.PantallaPerfilMedico
+import com.huanco.lab05_clinicasalud_huanco.pantallas.PantallaPerfil
 
 @Composable
 fun NavegacionApp() {
@@ -35,6 +36,9 @@ fun NavegacionApp() {
                 },
                 onHistorialClick = {
                     navController.navigate("historial")
+                },
+                onPerfilClick = {
+                    navController.navigate("perfilUsuario")
                 }
             )
         }
@@ -108,6 +112,9 @@ fun NavegacionApp() {
 
         composable("historial") {
             PantallaHistorialMedico()
+        }
+        composable("perfilUsuario") {
+            PantallaPerfil()
         }
     }
 }

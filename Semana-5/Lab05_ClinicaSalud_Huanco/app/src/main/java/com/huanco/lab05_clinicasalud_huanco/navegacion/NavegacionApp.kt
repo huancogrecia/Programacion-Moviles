@@ -107,7 +107,11 @@ fun NavegacionApp() {
             )
         }
         composable("misCitas") {
-            PantallaMisCitas()
+            PantallaMisCitas(
+                onRegresarClick = {
+                    navController.popBackStack()
+                }
+            )
         }
 
         composable("historial") {

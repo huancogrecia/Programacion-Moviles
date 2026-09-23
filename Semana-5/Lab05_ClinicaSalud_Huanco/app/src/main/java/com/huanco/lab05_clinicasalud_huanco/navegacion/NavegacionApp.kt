@@ -115,7 +115,11 @@ fun NavegacionApp() {
         }
 
         composable("historial") {
-            PantallaHistorialMedico()
+            PantallaHistorialMedico(
+                onRegresarClick = {
+                    navController.popBackStack()
+                }
+            )
         }
         composable("perfilUsuario") {
             PantallaPerfil()

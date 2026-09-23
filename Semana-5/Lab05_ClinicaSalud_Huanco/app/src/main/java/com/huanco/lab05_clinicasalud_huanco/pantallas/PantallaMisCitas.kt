@@ -12,6 +12,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -57,7 +58,14 @@ fun PantallaMisCitas(
                     ) {
                         Text(text = "Médico: ${cita.first}")
                         Text(text = "Fecha y hora: ${cita.second}")
-                        Text(text = "Estado: ${cita.third}")
+                        Text(
+                            text = "Estado: ${cita.third}",
+                            color = if (cita.third == "Confirmada") {
+                                Color(0xFF2E7D32)
+                            } else {
+                                Color(0xFF1565C0)
+                            }
+                        )
                     }
                 }
             }

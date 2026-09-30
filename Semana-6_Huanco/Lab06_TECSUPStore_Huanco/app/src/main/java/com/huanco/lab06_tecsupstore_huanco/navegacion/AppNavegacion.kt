@@ -13,12 +13,16 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.huanco.lab06_tecsupstore_huanco.componentes.AppDrawer
+import com.huanco.lab06_tecsupstore_huanco.model.Product
 import com.huanco.lab06_tecsupstore_huanco.screens.FavoritesScreen
 import com.huanco.lab06_tecsupstore_huanco.screens.HomeScreen
 import com.huanco.lab06_tecsupstore_huanco.screens.PedidosScreen
@@ -41,6 +45,19 @@ fun AppNavegacion() {
 
     val rutaActual =
         backStackEntry?.destination?.route ?: Rutas.INICIO
+
+    // Estado para guardar los productos favoritos usando remember y mutableStateOf
+    var listaFavoritos by remember {
+        mutableStateOf(listOf<Product>())
+    }
+
+    fun toggleFavorito(producto: Product) {
+        listaFavoritos = if (listaFavoritos.contains(producto)) {
+            listaFavoritos - producto
+        } else {
+            listaFavoritos + producto
+        }
+    }
 
     fun navegar(ruta: String) {
         navController.navigate(ruta) {
@@ -102,7 +119,9 @@ fun AppNavegacion() {
             ) {
                 composable(Rutas.INICIO) {
                     HomeScreen(
-                        paddingValues = paddingValues
+                        paddingValues = paddingValues,
+                        listaFavoritos = listaFavoritos,
+                        onToggleFavorite = { producto -> toggleFavorito(producto) }
                     )
                 }
 
@@ -114,7 +133,9 @@ fun AppNavegacion() {
 
                 composable(Rutas.FAVORITOS) {
                     FavoritesScreen(
-                        paddingValues = paddingValues
+                        paddingValues = paddingValues,
+                        listaFavoritos = listaFavoritos,
+                        onToggleFavorite = { producto -> toggleFavorito(producto) }
                     )
                 }
 

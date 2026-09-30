@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -19,7 +20,9 @@ import com.huanco.lab06_tecsupstore_huanco.model.Product
 
 @Composable
 fun HomeScreen(
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
+    listaFavoritos: List<Product> = emptyList(),
+    onToggleFavorite: (Product) -> Unit = {}
 ) {
     val categorias = listOf(
         "Todos",
@@ -54,7 +57,10 @@ fun HomeScreen(
             .padding(paddingValues)
             .padding(16.dp)
     ) {
-        Text(text = "Categorías")
+        Text(
+            text = "Categorías",
+            style = MaterialTheme.typography.titleMedium
+        )
 
         LazyRow(
             modifier = Modifier
@@ -71,13 +77,21 @@ fun HomeScreen(
             }
         }
 
-        Text(text = "Productos")
+        Text(
+            text = "Productos",
+            style = MaterialTheme.typography.titleMedium
+        )
 
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(productos) { producto ->
-                ProductCard(product = producto)
+                val esFavorito = listaFavoritos.contains(producto)
+                ProductCard(
+                    product = producto,
+                    isFavorite = esFavorito,
+                    onFavoriteClick = { onToggleFavorite(producto) }
+                )
             }
         }
     }

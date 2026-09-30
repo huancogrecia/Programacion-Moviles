@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material3.Badge
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -29,6 +30,7 @@ import com.huanco.lab06_tecsupstore_huanco.navegacion.Rutas
 @Composable
 fun AppDrawer(
     rutaActual: String,
+    cantidadFavoritos: Int = 0,
     onInicioClick: () -> Unit,
     onPedidosClick: () -> Unit,
     onFavoritosClick: () -> Unit,
@@ -109,6 +111,13 @@ fun AppDrawer(
                     imageVector = Icons.Default.Favorite,
                     contentDescription = null
                 )
+            },
+            badge = {
+                if (cantidadFavoritos > 0) {
+                    Badge {
+                        Text(text = cantidadFavoritos.toString())
+                    }
+                }
             }
         )
 

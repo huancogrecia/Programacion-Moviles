@@ -74,6 +74,7 @@ fun AppNavegacion() {
         drawerContent = {
             AppDrawer(
                 rutaActual = rutaActual,
+                cantidadFavoritos = listaFavoritos.size,
                 onInicioClick = {
                     navegar(Rutas.INICIO)
                 },

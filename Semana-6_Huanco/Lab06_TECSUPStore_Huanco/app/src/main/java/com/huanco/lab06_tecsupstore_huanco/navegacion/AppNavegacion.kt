@@ -12,15 +12,18 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.huanco.lab06_tecsupstore_huanco.componentes.AppDrawer
+import com.huanco.lab06_tecsupstore_huanco.screens.FavoritesScreen
 import com.huanco.lab06_tecsupstore_huanco.screens.HomeScreen
+import com.huanco.lab06_tecsupstore_huanco.screens.PedidosScreen
+import com.huanco.lab06_tecsupstore_huanco.screens.ProfileScreen
 import kotlinx.coroutines.launch
-import androidx.compose.runtime.getValue
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -39,30 +42,32 @@ fun AppNavegacion() {
     val rutaActual =
         backStackEntry?.destination?.route ?: Rutas.INICIO
 
+    fun navegar(ruta: String) {
+        navController.navigate(ruta) {
+            launchSingleTop = true
+        }
+
+        scope.launch {
+            drawerState.close()
+        }
+    }
+
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
             AppDrawer(
                 rutaActual = rutaActual,
                 onInicioClick = {
-                    scope.launch {
-                        drawerState.close()
-                    }
+                    navegar(Rutas.INICIO)
                 },
                 onPedidosClick = {
-                    scope.launch {
-                        drawerState.close()
-                    }
+                    navegar(Rutas.PEDIDOS)
                 },
                 onFavoritosClick = {
-                    scope.launch {
-                        drawerState.close()
-                    }
+                    navegar(Rutas.FAVORITOS)
                 },
                 onPerfilClick = {
-                    scope.launch {
-                        drawerState.close()
-                    }
+                    navegar(Rutas.PERFIL)
                 }
             )
         }
@@ -97,6 +102,24 @@ fun AppNavegacion() {
             ) {
                 composable(Rutas.INICIO) {
                     HomeScreen(
+                        paddingValues = paddingValues
+                    )
+                }
+
+                composable(Rutas.PEDIDOS) {
+                    PedidosScreen(
+                        paddingValues = paddingValues
+                    )
+                }
+
+                composable(Rutas.FAVORITOS) {
+                    FavoritesScreen(
+                        paddingValues = paddingValues
+                    )
+                }
+
+                composable(Rutas.PERFIL) {
+                    ProfileScreen(
                         paddingValues = paddingValues
                     )
                 }

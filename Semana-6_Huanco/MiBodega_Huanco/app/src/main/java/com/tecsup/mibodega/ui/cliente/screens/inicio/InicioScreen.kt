@@ -14,7 +14,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
@@ -31,6 +30,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
@@ -70,99 +70,287 @@ fun InicioScreen(
     onProductoClick: (Producto) -> Unit,
     onAgregarProducto: (Producto) -> Unit
 ) {
-    var categoriaSeleccionada by remember { mutableStateOf(listaCategorias.first()) }
-    var textoBusqueda by remember { mutableStateOf("") }
+    var categoriaSeleccionada by remember {
+        mutableStateOf(listaCategorias.first())
+    }
+
+    var textoBusqueda by remember {
+        mutableStateOf("")
+    }
+
+    var destinoSeleccionado by remember {
+        mutableStateOf(0)
+    }
 
     val productosFiltrados = productos.filter { producto ->
-        val coincideCategoria = categoriaSeleccionada == "Todos" || producto.categoria == categoriaSeleccionada
-        val coincideBusqueda = producto.nombre.contains(textoBusqueda, ignoreCase = true)
+        val coincideCategoria =
+            categoriaSeleccionada == "Todos" ||
+                    producto.categoria == categoriaSeleccionada
+
+        val coincideBusqueda =
+            producto.nombre.contains(
+                textoBusqueda,
+                ignoreCase = true
+            )
+
         coincideCategoria && coincideBusqueda
     }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Mi Bodega", fontWeight = FontWeight.Bold) },
+                title = {
+                    Text(
+                        text = "Mi Bodega",
+                        fontWeight = FontWeight.Bold
+                    )
+                },
                 actions = {
                     IconButton(onClick = onVerCarrito) {
                         BadgedBox(
                             badge = {
                                 if (cantidadCarrito > 0) {
-                                    Badge { Text("$cantidadCarrito") }
+                                    Badge {
+                                        Text("$cantidadCarrito")
+                                    }
                                 }
                             }
                         ) {
-                            Icon(Icons.Default.ShoppingCart, contentDescription = "Carrito")
+                            Icon(
+                                imageVector = Icons.Default.ShoppingCart,
+                                contentDescription = "Carrito"
+                            )
                         }
                     }
                 }
             )
         },
-        bottomBar = { BarraInferior() }
-    ) { paddingInterno ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingInterno)
-                .padding(horizontal = 16.dp)
-        ) {
-            OutlinedTextField(
-                value = textoBusqueda,
-                onValueChange = { textoBusqueda = it },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp),
-                placeholder = { Text("Buscar productos...") },
-                leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
-                singleLine = true,
-                shape = RoundedCornerShape(12.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedContainerColor = GrisClaro,
-                    focusedContainerColor = GrisClaro,
-                    unfocusedBorderColor = androidx.compose.ui.graphics.Color.Transparent,
-                    focusedBorderColor = VerdeBodega
-                )
-            )
 
-            Text(
-                text = "Productos destacados",
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(top = 20.dp, bottom = 4.dp)
-            )
-
-            LazyRow(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                contentPadding = PaddingValues(vertical = 8.dp)
-            ) {
-                items(listaCategorias) { categoria ->
-                    ChipCategoria(
-                        texto = categoria,
-                        seleccionado = categoria == categoriaSeleccionada,
-                        onClick = { categoriaSeleccionada = categoria }
-                    )
+        bottomBar = {
+            BarraInferior(
+                seleccionado = destinoSeleccionado,
+                onSeleccionar = {
+                    destinoSeleccionado = it
                 }
+            )
+        }
+    ) { paddingInterno ->
+
+        when (destinoSeleccionado) {
+
+            0 -> {
+                PantallaProductos(
+                    productos = productosFiltrados,
+                    categoriaSeleccionada = categoriaSeleccionada,
+                    textoBusqueda = textoBusqueda,
+                    onTextoBusquedaChange = {
+                        textoBusqueda = it
+                    },
+                    onCategoriaSeleccionada = {
+                        categoriaSeleccionada = it
+                    },
+                    onProductoClick = onProductoClick,
+                    onAgregarProducto = onAgregarProducto,
+                    paddingValues = paddingInterno
+                )
             }
 
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                contentPadding = PaddingValues(vertical = 12.dp),
-                modifier = Modifier.fillMaxSize()
-            ) {
-                items(productosFiltrados) { producto ->
-                    ProductoCard(
-                        producto = producto,
-                        onClick = { onProductoClick(producto) },
-                        onAgregar = { onAgregarProducto(producto) }
-                    )
-                }
+            1 -> {
+                PantallaCategorias(
+                    categoriaSeleccionada = categoriaSeleccionada,
+                    onCategoriaSeleccionada = {
+                        categoriaSeleccionada = it
+                        destinoSeleccionado = 0
+                    },
+                    paddingValues = paddingInterno
+                )
+            }
+
+            2 -> {
+                PantallaSimple(
+                    titulo = "Pedidos",
+                    mensaje = "Aquí podrás consultar tus pedidos.",
+                    paddingValues = paddingInterno
+                )
+            }
+
+            3 -> {
+                PantallaSimple(
+                    titulo = "Perfil",
+                    mensaje = "Información del perfil del cliente.",
+                    paddingValues = paddingInterno
+                )
             }
         }
     }
 }
 
-// Sub-composables PRIVADOS: solo los usa esta pantalla.
+@Composable
+private fun PantallaProductos(
+    productos: List<Producto>,
+    categoriaSeleccionada: String,
+    textoBusqueda: String,
+    onTextoBusquedaChange: (String) -> Unit,
+    onCategoriaSeleccionada: (String) -> Unit,
+    onProductoClick: (Producto) -> Unit,
+    onAgregarProducto: (Producto) -> Unit,
+    paddingValues: PaddingValues
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues)
+            .padding(horizontal = 16.dp)
+    ) {
+
+        OutlinedTextField(
+            value = textoBusqueda,
+            onValueChange = onTextoBusquedaChange,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp),
+            placeholder = {
+                Text("Buscar productos...")
+            },
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = null
+                )
+            },
+            singleLine = true,
+            shape = RoundedCornerShape(12.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                unfocusedContainerColor = GrisClaro,
+                focusedContainerColor = GrisClaro,
+                unfocusedBorderColor =
+                    androidx.compose.ui.graphics.Color.Transparent,
+                focusedBorderColor = VerdeBodega
+            )
+        )
+
+        Text(
+            text = "Productos destacados",
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(
+                top = 20.dp,
+                bottom = 4.dp
+            )
+        )
+
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            contentPadding = PaddingValues(vertical = 8.dp)
+        ) {
+            items(listaCategorias) { categoria ->
+                ChipCategoria(
+                    texto = categoria,
+                    seleccionado =
+                        categoria == categoriaSeleccionada,
+                    onClick = {
+                        onCategoriaSeleccionada(categoria)
+                    }
+                )
+            }
+        }
+
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            horizontalArrangement =
+                Arrangement.spacedBy(12.dp),
+            verticalArrangement =
+                Arrangement.spacedBy(12.dp),
+            contentPadding =
+                PaddingValues(vertical = 12.dp),
+            modifier = Modifier.fillMaxSize()
+        ) {
+            items(productos) { producto ->
+                ProductoCard(
+                    producto = producto,
+                    onClick = {
+                        onProductoClick(producto)
+                    },
+                    onAgregar = {
+                        onAgregarProducto(producto)
+                    }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun PantallaCategorias(
+    categoriaSeleccionada: String,
+    onCategoriaSeleccionada: (String) -> Unit,
+    paddingValues: PaddingValues
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues)
+            .padding(24.dp)
+    ) {
+
+        Text(
+            text = "Categorías",
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Bold
+        )
+
+        Text(
+            text = "Selecciona una categoría",
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier.padding(
+                top = 12.dp,
+                bottom = 16.dp
+            )
+        )
+
+        LazyRow(
+            horizontalArrangement =
+                Arrangement.spacedBy(8.dp)
+        ) {
+            items(listaCategorias) { categoria ->
+                ChipCategoria(
+                    texto = categoria,
+                    seleccionado =
+                        categoria == categoriaSeleccionada,
+                    onClick = {
+                        onCategoriaSeleccionada(categoria)
+                    }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun PantallaSimple(
+    titulo: String,
+    mensaje: String,
+    paddingValues: PaddingValues
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues)
+            .padding(24.dp)
+    ) {
+
+        Text(
+            text = titulo,
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Bold
+        )
+
+        Text(
+            text = mensaje,
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier.padding(top = 16.dp)
+        )
+    }
+}
 
 @Composable
 private fun ChipCategoria(
@@ -170,45 +358,96 @@ private fun ChipCategoria(
     seleccionado: Boolean,
     onClick: () -> Unit
 ) {
-    val fondo = if (seleccionado) VerdeBodega else GrisClaro
-    val contenido = if (seleccionado) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
+    val fondo =
+        if (seleccionado) VerdeBodega
+        else GrisClaro
+
+    val contenido =
+        if (seleccionado) {
+            MaterialTheme.colorScheme.onPrimary
+        } else {
+            MaterialTheme.colorScheme.onSurface
+        }
 
     Row(
         modifier = Modifier
-            .background(fondo, RoundedCornerShape(20.dp))
+            .background(
+                fondo,
+                RoundedCornerShape(20.dp)
+            )
             .clickable(onClick = onClick)
-            .padding(horizontal = 16.dp, vertical = 10.dp)
+            .padding(
+                horizontal = 16.dp,
+                vertical = 10.dp
+            )
     ) {
-        Text(text = texto, color = contenido, fontWeight = FontWeight.Medium)
+        Text(
+            text = texto,
+            color = contenido,
+            fontWeight = FontWeight.Medium
+        )
     }
 }
 
 @Composable
-private fun BarraInferior() {
-    var seleccionado by remember { mutableStateOf(0) }
+private fun BarraInferior(
+    seleccionado: Int,
+    onSeleccionar: (Int) -> Unit
+) {
     val items = listOf(
-        Triple("Inicio", Icons.Default.Home, 0),
-        Triple("Categorías", Icons.Default.List, 1),
-        Triple("Pedidos", Icons.Default.Receipt, 2),
-        Triple("Perfil", Icons.Default.Person, 3)
+        Triple(
+            "Inicio",
+            Icons.Default.Home,
+            0
+        ),
+        Triple(
+            "Categorías",
+            Icons.Default.List,
+            1
+        ),
+        Triple(
+            "Pedidos",
+            Icons.Default.Receipt,
+            2
+        ),
+        Triple(
+            "Perfil",
+            Icons.Default.Person,
+            3
+        )
     )
+
     NavigationBar {
         items.forEach { (etiqueta, icono, indice) ->
+
             NavigationBarItem(
                 selected = seleccionado == indice,
-                onClick = { seleccionado = indice },
-                icon = { Icon(icono, contentDescription = etiqueta) },
-                label = { Text(etiqueta) },
-                colors = androidx.compose.material3.NavigationBarItemDefaults.colors(
-                    selectedIconColor = VerdeBodega,
-                    selectedTextColor = VerdeBodega
-                )
+                onClick = {
+                    onSeleccionar(indice)
+                },
+                icon = {
+                    Icon(
+                        imageVector = icono,
+                        contentDescription = etiqueta
+                    )
+                },
+                label = {
+                    Text(etiqueta)
+                },
+                colors =
+                    NavigationBarItemDefaults.colors(
+                        selectedIconColor = VerdeBodega,
+                        selectedTextColor = VerdeBodega
+                    )
             )
         }
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
+@Preview(
+    showBackground = true,
+    showSystemUi = true
+)
 @Composable
 private fun InicioPreview() {
     BodegaTheme {

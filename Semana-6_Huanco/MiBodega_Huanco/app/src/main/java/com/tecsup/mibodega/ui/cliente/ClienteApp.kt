@@ -15,6 +15,7 @@ import com.tecsup.mibodega.ui.cliente.modelo.Producto
 import com.tecsup.mibodega.ui.cliente.modelo.listaProductosFake
 import com.tecsup.mibodega.ui.cliente.screens.bienvenida.BienvenidaScreen
 import com.tecsup.mibodega.ui.cliente.screens.carrito.CarritoScreen
+import com.tecsup.mibodega.ui.cliente.screens.confirmacion.ConfirmacionScreen
 import com.tecsup.mibodega.ui.cliente.screens.detalle.DetalleProductoScreen
 import com.tecsup.mibodega.ui.cliente.screens.entrega.DatosEntregaScreen
 import com.tecsup.mibodega.ui.cliente.screens.inicio.InicioScreen
@@ -35,6 +36,7 @@ private object Rutas {
     const val DETALLE = "detalle/{productoId}"
     const val CARRITO = "carrito"
     const val ENTREGA = "entrega"
+    const val CONFIRMACION = "confirmacion"
 
     fun detalle(productoId: Int) = "detalle/$productoId"
 }
@@ -51,6 +53,7 @@ fun ClienteApp() {
         navController = navController,
         startDestination = Rutas.BIENVENIDA
     ) {
+
         composable(Rutas.BIENVENIDA) {
             BienvenidaScreen(
                 onRegistrarse = {
@@ -151,8 +154,10 @@ fun ClienteApp() {
                     carrito = carrito.mapNotNull {
                         when {
                             it.producto.id != producto.id -> it
+
                             it.cantidad > 1 ->
                                 it.copy(cantidad = it.cantidad - 1)
+
                             else -> null
                         }
                     }
@@ -174,8 +179,27 @@ fun ClienteApp() {
                     navController.popBackStack()
                 },
                 onConfirmarPedido = {
-                    // Se conectará con ConfirmacionScreen
-                    // cuando completemos esa pantalla
+                    carrito = emptyList()
+
+                    navController.navigate(Rutas.CONFIRMACION) {
+                        popUpTo(Rutas.CARRITO) {
+                            inclusive = true
+                        }
+                    }
+                }
+            )
+        }
+
+        composable(Rutas.CONFIRMACION) {
+            ConfirmacionScreen(
+                onVolverInicio = {
+                    navController.navigate(Rutas.INICIO) {
+                        popUpTo(Rutas.INICIO) {
+                            inclusive = false
+                        }
+
+                        launchSingleTop = true
+                    }
                 }
             )
         }

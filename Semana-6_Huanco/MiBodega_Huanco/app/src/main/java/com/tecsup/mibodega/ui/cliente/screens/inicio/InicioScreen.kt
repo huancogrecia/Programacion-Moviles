@@ -73,8 +73,12 @@ fun InicioScreen(
     }
 
     val productosFiltrados = productos.filter { producto ->
-        categoriaSeleccionada == "Todos" ||
+        val coincideCategoria = categoriaSeleccionada == "Todos" ||
                 producto.categoria == categoriaSeleccionada
+        val coincideBusqueda = textoBusqueda.isEmpty() ||
+                producto.nombre.contains(textoBusqueda, ignoreCase = true)
+
+        coincideCategoria && coincideBusqueda
     }
 
     Scaffold(

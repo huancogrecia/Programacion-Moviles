@@ -9,10 +9,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -53,14 +51,6 @@ import com.tecsup.mibodega.ui.theme.BodegaTheme
 import com.tecsup.mibodega.ui.theme.GrisClaro
 import com.tecsup.mibodega.ui.theme.VerdeBodega
 
-/**
- * Pantalla 3: Inicio / Productos (mockup "Cliente").
- * La más completa: Scaffold (topBar + bottomBar), LazyRow de categorías
- * y LazyVerticalGrid de productos.
- *
- * @param productos lista completa (fake por ahora, luego vendrá de un ViewModel)
- * @param cantidadCarrito para el badge del carrito en la topBar
- */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InicioScreen(
@@ -83,17 +73,8 @@ fun InicioScreen(
     }
 
     val productosFiltrados = productos.filter { producto ->
-        val coincideCategoria =
-            categoriaSeleccionada == "Todos" ||
-                    producto.categoria == categoriaSeleccionada
-
-        val coincideBusqueda =
-            producto.nombre.contains(
-                textoBusqueda,
-                ignoreCase = true
-            )
-
-        coincideCategoria && coincideBusqueda
+        categoriaSeleccionada == "Todos" ||
+                producto.categoria == categoriaSeleccionada
     }
 
     Scaffold(
@@ -125,7 +106,6 @@ fun InicioScreen(
                 }
             )
         },
-
         bottomBar = {
             BarraInferior(
                 seleccionado = destinoSeleccionado,
@@ -202,7 +182,6 @@ private fun PantallaProductos(
             .padding(paddingValues)
             .padding(horizontal = 16.dp)
     ) {
-
         OutlinedTextField(
             value = textoBusqueda,
             onValueChange = onTextoBusquedaChange,
@@ -245,8 +224,7 @@ private fun PantallaProductos(
             items(listaCategorias) { categoria ->
                 ChipCategoria(
                     texto = categoria,
-                    seleccionado =
-                        categoria == categoriaSeleccionada,
+                    seleccionado = categoria == categoriaSeleccionada,
                     onClick = {
                         onCategoriaSeleccionada(categoria)
                     }
@@ -254,17 +232,15 @@ private fun PantallaProductos(
             }
         }
 
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            horizontalArrangement =
-                Arrangement.spacedBy(12.dp),
-            verticalArrangement =
-                Arrangement.spacedBy(12.dp),
-            contentPadding =
-                PaddingValues(vertical = 12.dp),
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            contentPadding = PaddingValues(vertical = 12.dp),
             modifier = Modifier.fillMaxSize()
         ) {
-            items(productos) { producto ->
+            items(
+                items = productos,
+                key = { producto -> producto.id }
+            ) { producto ->
                 ProductoCard(
                     producto = producto,
                     onClick = {
@@ -291,7 +267,6 @@ private fun PantallaCategorias(
             .padding(paddingValues)
             .padding(24.dp)
     ) {
-
         Text(
             text = "Categorías",
             style = MaterialTheme.typography.headlineMedium,
@@ -308,14 +283,12 @@ private fun PantallaCategorias(
         )
 
         LazyRow(
-            horizontalArrangement =
-                Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(listaCategorias) { categoria ->
                 ChipCategoria(
                     texto = categoria,
-                    seleccionado =
-                        categoria == categoriaSeleccionada,
+                    seleccionado = categoria == categoriaSeleccionada,
                     onClick = {
                         onCategoriaSeleccionada(categoria)
                     }
@@ -337,7 +310,6 @@ private fun PantallaSimple(
             .padding(paddingValues)
             .padding(24.dp)
     ) {
-
         Text(
             text = titulo,
             style = MaterialTheme.typography.headlineMedium,
@@ -359,8 +331,7 @@ private fun ChipCategoria(
     onClick: () -> Unit
 ) {
     val fondo =
-        if (seleccionado) VerdeBodega
-        else GrisClaro
+        if (seleccionado) VerdeBodega else GrisClaro
 
     val contenido =
         if (seleccionado) {
@@ -419,7 +390,6 @@ private fun BarraInferior(
 
     NavigationBar {
         items.forEach { (etiqueta, icono, indice) ->
-
             NavigationBarItem(
                 selected = seleccionado == indice,
                 onClick = {
@@ -434,11 +404,10 @@ private fun BarraInferior(
                 label = {
                     Text(etiqueta)
                 },
-                colors =
-                    NavigationBarItemDefaults.colors(
-                        selectedIconColor = VerdeBodega,
-                        selectedTextColor = VerdeBodega
-                    )
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = VerdeBodega,
+                    selectedTextColor = VerdeBodega
+                )
             )
         }
     }

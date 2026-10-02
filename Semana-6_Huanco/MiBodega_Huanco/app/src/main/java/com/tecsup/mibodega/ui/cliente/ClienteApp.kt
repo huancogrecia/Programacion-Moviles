@@ -60,7 +60,11 @@ fun ClienteApp() {
                     navController.navigate(Rutas.REGISTRO)
                 },
                 onIniciarSesion = {
-                    // Pantalla de login no incluida en el alcance
+                    navController.navigate(Rutas.INICIO) {
+                        popUpTo(Rutas.BIENVENIDA) {
+                            inclusive = true
+                        }
+                    }
                 },
                 onTerminos = {
                     // Términos y condiciones no incluidos en el alcance

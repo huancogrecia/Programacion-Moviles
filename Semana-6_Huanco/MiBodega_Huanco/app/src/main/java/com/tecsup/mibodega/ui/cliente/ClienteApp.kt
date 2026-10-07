@@ -21,14 +21,6 @@ import com.tecsup.mibodega.ui.cliente.screens.entrega.DatosEntregaScreen
 import com.tecsup.mibodega.ui.cliente.screens.inicio.InicioScreen
 import com.tecsup.mibodega.ui.cliente.screens.registro.RegistroScreen
 
-/**
- * "Director de orquesta" de la app cliente:
- * - Tiene el NavHost con las rutas de cada pantalla.
- * - Tiene el estado del carrito (List<ItemCarrito>), que se reparte
- *   hacia abajo a Inicio, Detalle, Carrito y Entrega.
- * Ninguna Screen navega sola ni modifica el carrito directamente:
- * todas reciben funciones (lambdas) desde aquí (state hoisting).
- */
 private object Rutas {
     const val BIENVENIDA = "bienvenida"
     const val REGISTRO = "registro"
@@ -47,6 +39,10 @@ fun ClienteApp() {
 
     var carrito by remember {
         mutableStateOf<List<ItemCarrito>>(emptyList())
+    }
+
+    var favoritos by remember {
+        mutableStateOf<List<Producto>>(emptyList())
     }
 
     NavHost(
@@ -90,6 +86,7 @@ fun ClienteApp() {
         composable(Rutas.INICIO) {
             InicioScreen(
                 cantidadCarrito = carrito.sumOf { it.cantidad },
+                favoritos = favoritos,
                 onVerCarrito = {
                     navController.navigate(Rutas.CARRITO)
                 },
@@ -124,8 +121,16 @@ fun ClienteApp() {
 
             DetalleProductoScreen(
                 producto = producto,
+                esFavorito = favoritos.any { it.id == producto.id },
                 onVolver = {
                     navController.popBackStack()
+                },
+                onFavoritoClick = {
+                    favoritos = if (favoritos.any { it.id == producto.id }) {
+                        favoritos.filterNot { it.id == producto.id }
+                    } else {
+                        favoritos + producto
+                    }
                 },
                 onAgregarAlCarrito = { productoSeleccionado, cantidad ->
                     carrito = agregarOSumarProducto(

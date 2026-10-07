@@ -6,20 +6,24 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Receipt
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -33,6 +37,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -56,6 +61,7 @@ import com.tecsup.mibodega.ui.theme.VerdeBodega
 fun InicioScreen(
     productos: List<Producto> = listaProductosFake,
     cantidadCarrito: Int,
+    favoritos: List<Producto> = emptyList(),
     onVerCarrito: () -> Unit,
     onProductoClick: (Producto) -> Unit,
     onAgregarProducto: (Producto) -> Unit
@@ -70,6 +76,10 @@ fun InicioScreen(
 
     var destinoSeleccionado by remember {
         mutableStateOf(0)
+    }
+
+    var mostrarFavoritos by remember {
+        mutableStateOf(false)
     }
 
     val productosFiltrados = productos.filter { producto ->
@@ -87,6 +97,23 @@ fun InicioScreen(
                     )
                 },
                 actions = {
+                    IconButton(onClick = { mostrarFavoritos = true }) {
+                        BadgedBox(
+                            badge = {
+                                if (favoritos.isNotEmpty()) {
+                                    Badge {
+                                        Text("${favoritos.size}")
+                                    }
+                                }
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Favorite,
+                                contentDescription = "Favoritos"
+                            )
+                        }
+                    }
+
                     IconButton(onClick = onVerCarrito) {
                         BadgedBox(
                             badge = {
@@ -163,6 +190,57 @@ fun InicioScreen(
             }
         }
     }
+
+    if (mostrarFavoritos) {
+        DialogoFavoritos(
+            favoritos = favoritos,
+            onCerrar = { mostrarFavoritos = false }
+        )
+    }
+}
+
+@Composable
+private fun DialogoFavoritos(
+    favoritos: List<Producto>,
+    onCerrar: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onCerrar,
+        title = { Text("Mis Favoritos") },
+        text = {
+            if (favoritos.isEmpty()) {
+                Text("No tienes productos favoritos")
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(300.dp)
+                ) {
+                    items(favoritos) { producto ->
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp)
+                        ) {
+                            Text(
+                                text = producto.nombre,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                            Text(
+                                text = "S/ %.2f".format(producto.precio),
+                                color = VerdeBodega
+                            )
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onCerrar) {
+                Text("Cerrar")
+            }
+        }
+    )
 }
 
 @Composable
@@ -422,6 +500,7 @@ private fun InicioPreview() {
     BodegaTheme {
         InicioScreen(
             cantidadCarrito = 3,
+            favoritos = emptyList(),
             onVerCarrito = {},
             onProductoClick = {},
             onAgregarProducto = {}

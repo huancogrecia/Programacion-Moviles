@@ -40,16 +40,12 @@ import com.tecsup.mibodega.ui.theme.BodegaTheme
 import com.tecsup.mibodega.ui.theme.GrisClaro
 import com.tecsup.mibodega.ui.theme.RojoPrecio
 
-/**
- * Pantalla 4: Detalle del producto (mockup "Cliente").
- * Guarda su propia cantidad seleccionada (remember) mientras el usuario
- * decide cuánto quiere; solo al tocar "Agregar al carrito" le avisa
- * a ClienteApp cuánto agregar.
- */
 @Composable
 fun DetalleProductoScreen(
     producto: Producto,
+    esFavorito: Boolean,
     onVolver: () -> Unit,
+    onFavoritoClick: () -> Unit,
     onAgregarAlCarrito: (Producto, Int) -> Unit
 ) {
     var cantidad by remember { mutableStateOf(1) }
@@ -59,7 +55,11 @@ fun DetalleProductoScreen(
             .fillMaxSize()
             .safeDrawingPadding()
     ) {
-        EncabezadoDetalle(onVolver = onVolver)
+        EncabezadoDetalle(
+            esFavorito = esFavorito,
+            onVolver = onVolver,
+            onFavoritoClick = onFavoritoClick
+        )
 
         ImagenProducto(producto = producto)
 
@@ -112,9 +112,11 @@ fun DetalleProductoScreen(
 }
 
 @Composable
-private fun EncabezadoDetalle(onVolver: () -> Unit) {
-    var esFavorito by remember { mutableStateOf(false) }
-
+private fun EncabezadoDetalle(
+    esFavorito: Boolean,
+    onVolver: () -> Unit,
+    onFavoritoClick: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -126,7 +128,7 @@ private fun EncabezadoDetalle(onVolver: () -> Unit) {
             Icon(Icons.Default.ArrowBack, contentDescription = "Volver")
         }
 
-        IconButton(onClick = { esFavorito = !esFavorito }) {
+        IconButton(onClick = onFavoritoClick) {
             Icon(
                 imageVector = if (esFavorito) {
                     Icons.Default.Favorite
@@ -158,7 +160,9 @@ private fun DetalleProductoPreview() {
     BodegaTheme {
         DetalleProductoScreen(
             producto = listaProductosFake.first { it.nombre == "Coca-Cola Original" },
+            esFavorito = false,
             onVolver = {},
+            onFavoritoClick = {},
             onAgregarAlCarrito = { _, _ -> }
         )
     }

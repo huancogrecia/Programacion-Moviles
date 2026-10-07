@@ -14,9 +14,16 @@ import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -24,6 +31,7 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -46,61 +54,150 @@ fun BienvenidaScreen(
     onIniciarSesion: () -> Unit,
     onTerminos: () -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    colors = listOf(FondoClaro, MaterialTheme.colorScheme.background),
-                    endY = 900f
+    var mostrarLogin by remember { mutableStateOf(false) }
+
+    Box(modifier = Modifier.fillMaxSize()) {
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(FondoClaro, MaterialTheme.colorScheme.background),
+                        endY = 900f
+                    )
                 )
+                .safeDrawingPadding()
+                .padding(horizontal = 24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Spacer(Modifier.height(24.dp))
+
+            IlustracionBodega()
+
+            Spacer(Modifier.height(16.dp))
+
+            TituloMiBodega()
+
+            Spacer(Modifier.height(12.dp))
+
+            Text(
+                text = "Tus productos de siempre\nen la puerta de tu casa",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center
             )
-            .safeDrawingPadding()
-            .padding(horizontal = 24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Spacer(Modifier.height(24.dp))
 
-        IlustracionBodega()
+            Spacer(Modifier.height(48.dp))
 
-        Spacer(Modifier.height(16.dp))
+            BotonPrimario(
+                texto = "Registrarme",
+                subtexto = "con mi teléfono",
+                icono = rememberVectorPainter(Icons.Default.Phone),
+                onClick = onRegistrarse
+            )
 
-        TituloMiBodega()
+            Spacer(Modifier.height(12.dp))
 
-        Spacer(Modifier.height(12.dp))
+            BotonSecundario(
+                texto = "Iniciar sesión",
+                onClick = { mostrarLogin = true }
+            )
 
-        Text(
-            text = "Tus productos de siempre\nen la puerta de tu casa",
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Center
-        )
+            Spacer(Modifier.height(20.dp))
 
-        Spacer(Modifier.weight(1f))
+            PieTerminos(onTerminos = onTerminos)
 
-        BotonPrimario(
-            texto = "Registrarme",
-            subtexto = "con mi teléfono",
-            icono = rememberVectorPainter(Icons.Default.Phone),
-            onClick = onRegistrarse
-        )
+            Spacer(Modifier.height(24.dp))
+        }
 
-        Spacer(Modifier.height(12.dp))
-
-        BotonSecundario(
-            texto = "Iniciar sesión",
-            onClick = onIniciarSesion
-        )
-
-        Spacer(Modifier.height(20.dp))
-
-        PieTerminos(onTerminos = onTerminos)
-
-        Spacer(Modifier.height(24.dp))
+        if (mostrarLogin) {
+            DialogoLogin(
+                onCancelar = { mostrarLogin = false },
+                onIngresar = {
+                    mostrarLogin = false
+                    onIniciarSesion()
+                }
+            )
+        }
     }
 }
 
-// Sub-composables PRIVADOS: solo los usa esta pantalla, por eso no van a "componentes".
+@Composable
+private fun DialogoLogin(
+    onCancelar: () -> Unit,
+    onIngresar: () -> Unit
+) {
+    var usuario by remember { mutableStateOf("") }
+    var contrasena by remember { mutableStateOf("") }
+    var error by remember { mutableStateOf("") }
+
+    AlertDialog(
+        onDismissRequest = onCancelar,
+        title = { Text("Iniciar sesión") },
+        text = {
+            Column {
+                OutlinedTextField(
+                    value = usuario,
+                    onValueChange = {
+                        usuario = it
+                        error = ""
+                    },
+                    label = { Text("Usuario") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(Modifier.height(12.dp))
+
+                OutlinedTextField(
+                    value = contrasena,
+                    onValueChange = {
+                        contrasena = it
+                        error = ""
+                    },
+                    label = { Text("Contraseña") },
+                    singleLine = true,
+                    visualTransformation = PasswordVisualTransformation(),
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                if (error.isNotEmpty()) {
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        text = error,
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    when {
+                        usuario.isEmpty() || contrasena.isEmpty() -> {
+                            error = "Completa todos los campos"
+                        }
+                        usuario == "grecia" && contrasena == "12345" -> {
+                            onIngresar()
+                        }
+                        else -> {
+                            error = "Usuario o contraseña incorrectos"
+                        }
+                    }
+                }
+            ) {
+                Text("Ingresar")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onCancelar) {
+                Text("Cancelar")
+            }
+        }
+    )
+}
 
 @Composable
 private fun IlustracionBodega() {
@@ -154,4 +251,3 @@ private fun BienvenidaPreview() {
         BienvenidaScreen({}, {}, {})
     }
 }
-

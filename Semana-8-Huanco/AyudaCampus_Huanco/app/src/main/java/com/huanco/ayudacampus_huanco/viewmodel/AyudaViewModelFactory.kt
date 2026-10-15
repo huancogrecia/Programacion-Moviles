@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.huanco.ayudacampus_huanco.data.repository.AyudaRepository
 import com.huanco.ayudacampus_huanco.data.prefs.PreferenciasStore
-class AyudaViewModelFactory(private val repo: AyudaRepository, private val preferencias: PreferenciasStore, private val usuario: Usuario? = null) : ViewModelProvider.Factory {
+class AyudaViewModelFactory(private val repo: AyudaRepository, private val preferencias: PreferenciasStore, private val usuario: Usuario? = null, private val ticketId: Int? = null) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(CategoriasViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
@@ -21,6 +21,10 @@ class AyudaViewModelFactory(private val repo: AyudaRepository, private val prefe
         if (modelClass.isAssignableFrom(NuevoTicketViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
             return NuevoTicketViewModel(repo, requireNotNull(usuario)) as T
+        }
+        if (modelClass.isAssignableFrom(TicketDetalleViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return TicketDetalleViewModel(repo, requireNotNull(usuario), requireNotNull(ticketId)) as T
         }
         throw IllegalArgumentException("ViewModel no registrado: $modelClass")
     }

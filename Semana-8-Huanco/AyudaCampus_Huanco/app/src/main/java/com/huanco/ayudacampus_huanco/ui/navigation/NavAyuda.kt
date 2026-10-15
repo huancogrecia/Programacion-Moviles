@@ -29,6 +29,8 @@ import androidx.navigation.navArgument
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.huanco.ayudacampus_huanco.AyudaApp
 import com.huanco.ayudacampus_huanco.data.prefs.PreferenciasStore
+import com.huanco.ayudacampus_huanco.ui.cliente.DetalleTicketScreen
+import com.huanco.ayudacampus_huanco.viewmodel.TicketDetalleViewModel
 import com.huanco.ayudacampus_huanco.ui.cliente.NuevoTicketScreen
 import com.huanco.ayudacampus_huanco.viewmodel.NuevoTicketViewModel
 import com.huanco.ayudacampus_huanco.ui.cliente.MisTicketsScreen
@@ -77,7 +79,7 @@ fun NavAyuda(vm: CategoriasViewModel, sesion: SesionViewModel) {
         }
         Scaffold(
             bottomBar = {
-                if (perfil == Rol.CLIENTE.name && ruta in listOf(Rutas.MIS_TICKETS, Rutas.NUEVO_TICKET, Rutas.PERFIL)) {
+                if (perfil == Rol.CLIENTE.name && ruta in listOf(Rutas.MIS_TICKETS, Rutas.NUEVO_TICKET, Rutas.PERFIL, Rutas.DETALLE_TICKET)) {
                     NavigationBar(containerColor = MaterialTheme.colorScheme.surface) {
                         val destinos = listOf(
                             Triple(Rutas.MIS_TICKETS, "Tickets", Icons.AutoMirrored.Outlined.List),
@@ -86,7 +88,7 @@ fun NavAyuda(vm: CategoriasViewModel, sesion: SesionViewModel) {
                         )
                         destinos.forEach { (destino, titulo, icono) ->
                             NavigationBarItem(
-                                selected = ruta == destino,
+                                selected = ruta == destino || (destino == Rutas.MIS_TICKETS && ruta == Rutas.DETALLE_TICKET),
                                 onClick = {
                                     nav.navigate(destino) {
                                         popUpTo(Rutas.MIS_TICKETS)
@@ -140,7 +142,12 @@ fun NavAyuda(vm: CategoriasViewModel, sesion: SesionViewModel) {
                     Text("Perfil", Modifier.padding(20.dp), style = MaterialTheme.typography.headlineMedium)
                 }
                 composable(Rutas.DETALLE_TICKET, arguments = listOf(navArgument("id") { type = NavType.IntType })) { entradaDetalle ->
-                    Text("Detalle del ticket #${entradaDetalle.arguments?.getInt("id")}", Modifier.padding(20.dp), style = MaterialTheme.typography.headlineMedium)
+                    usuario?.let { actual ->
+                        val id = requireNotNull(entradaDetalle.arguments).getInt("id")
+                        val factory = AyudaViewModelFactory((context.applicationContext as AyudaApp).repository, PreferenciasStore(context), actual, id)
+                        val detalle: TicketDetalleViewModel = viewModel(key = "detalle_${actual.id}_$id", factory = factory)
+                        DetalleTicketScreen(detalle, onVolver = { nav.popBackStack() })
+                    }
                 }
                 composable(Rutas.PANEL) {
                     Scaffold(topBar = { AppTopBar("Panel") }) { padding ->

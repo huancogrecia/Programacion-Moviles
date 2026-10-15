@@ -8,6 +8,7 @@ import com.huanco.ayudacampus_huanco.model.*
 interface AyudaRepository {
 // Usuarios
 suspend fun login(correo: String, clave: String): Usuario?
+suspend fun obtenerUsuario(id: Int): Usuario?
 // Categorías (ejemplo resuelto)
 fun observarCategorias(): Flow<List<Categoria>>
 fun observarCategoriasActivas(): Flow<List<Categoria>>

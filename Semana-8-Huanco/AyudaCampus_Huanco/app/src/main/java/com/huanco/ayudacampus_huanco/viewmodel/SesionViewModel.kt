@@ -35,6 +35,16 @@ class SesionViewModel(
         viewModelScope.launch {
             _perfilActivo.value = preferencias.perfilActivo.first()
             _usuarioId.value = preferencias.usuarioId.first()
+            if (_usuarioId.value > 0) {
+                val usuario = repo.obtenerUsuario(_usuarioId.value)
+                if (usuario != null && usuario.rol == _perfilActivo.value) {
+                    _usuarioActual.value = usuario
+                } else {
+                    preferencias.cerrarSesion()
+                    _perfilActivo.value = ""
+                    _usuarioId.value = 0
+                }
+            }
             _sesionCargada.value = true
         }
     }

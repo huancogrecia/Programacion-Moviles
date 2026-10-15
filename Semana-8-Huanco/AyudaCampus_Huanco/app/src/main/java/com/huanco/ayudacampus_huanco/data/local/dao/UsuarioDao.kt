@@ -10,6 +10,9 @@ interface UsuarioDao {
     @Query("SELECT * FROM usuarios WHERE correo = :correo AND clave = :clave LIMIT 1")
     suspend fun login(correo: String, clave: String): Usuario?
 
+    @Query("SELECT * FROM usuarios WHERE id = :id LIMIT 1")
+    suspend fun obtenerPorId(id: Int): Usuario?
+
     @Insert
     suspend fun insertarTodos(lista: List<Usuario>)
 

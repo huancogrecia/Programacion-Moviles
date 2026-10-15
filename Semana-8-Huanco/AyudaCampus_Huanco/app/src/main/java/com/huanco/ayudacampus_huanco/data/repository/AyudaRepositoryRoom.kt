@@ -15,6 +15,8 @@ class AyudaRepositoryRoom(private val db: AyudaDatabase) : AyudaRepository {
     override suspend fun login(correo: String, clave: String): Usuario? =
         db.usuarioDao().login(correo, clave)
 
+    override suspend fun obtenerUsuario(id: Int): Usuario? = db.usuarioDao().obtenerPorId(id)
+
     override fun observarCategorias(): Flow<List<Categoria>> = db.categoriaDao().observarTodas()
 
     override fun observarCategoriasActivas(): Flow<List<Categoria>> = db.categoriaDao().observarActivas()

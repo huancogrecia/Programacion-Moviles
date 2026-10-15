@@ -29,6 +29,8 @@ import androidx.navigation.navArgument
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.huanco.ayudacampus_huanco.AyudaApp
 import com.huanco.ayudacampus_huanco.data.prefs.PreferenciasStore
+import com.huanco.ayudacampus_huanco.ui.cliente.NuevoTicketScreen
+import com.huanco.ayudacampus_huanco.viewmodel.NuevoTicketViewModel
 import com.huanco.ayudacampus_huanco.ui.cliente.MisTicketsScreen
 import com.huanco.ayudacampus_huanco.viewmodel.AyudaViewModelFactory
 import com.huanco.ayudacampus_huanco.viewmodel.MisTicketsViewModel
@@ -123,7 +125,16 @@ fun NavAyuda(vm: CategoriasViewModel, sesion: SesionViewModel) {
                     }
                 }
                 composable(Rutas.NUEVO_TICKET) {
-                    Text("Nuevo ticket", Modifier.padding(20.dp), style = MaterialTheme.typography.headlineMedium)
+                    usuario?.let { actual ->
+                        val factory = AyudaViewModelFactory((context.applicationContext as AyudaApp).repository, PreferenciasStore(context), actual)
+                        val nuevoTicket: NuevoTicketViewModel = viewModel(key = "nuevo_ticket_${actual.id}", factory = factory)
+                        NuevoTicketScreen(nuevoTicket, onVolver = { nav.popBackStack() }, onEnviado = {
+                            nav.navigate(Rutas.MIS_TICKETS) {
+                                popUpTo(Rutas.MIS_TICKETS) { inclusive = true }
+                                launchSingleTop = true
+                            }
+                        })
+                    }
                 }
                 composable(Rutas.PERFIL) {
                     Text("Perfil", Modifier.padding(20.dp), style = MaterialTheme.typography.headlineMedium)

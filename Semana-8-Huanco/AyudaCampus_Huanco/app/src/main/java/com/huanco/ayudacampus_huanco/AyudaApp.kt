@@ -4,7 +4,10 @@ import com.huanco.ayudacampus_huanco.data.local.AyudaDatabase
 import com.huanco.ayudacampus_huanco.data.local.DatosIniciales
 import com.huanco.ayudacampus_huanco.data.repository.AyudaRepository
 import com.huanco.ayudacampus_huanco.data.repository.AyudaRepositoryRoom
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 class AyudaApp : Application() {
     val database by lazy { AyudaDatabase.obtener(this) }
     val repository: AyudaRepository by lazy { AyudaRepositoryRoom(database) }

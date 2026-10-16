@@ -7,5 +7,8 @@ object Rutas {
     const val DETALLE_TICKET = "detalle_ticket/{id}"
     const val PERFIL = "perfil"
     const val PANEL = "panel"
+    const val BANDEJA = "bandeja"
+    const val ATENDER_TICKET = "atender_ticket/{id}"
+    const val AJUSTES = "ajustes"
     const val CATEGORIAS = "categorias"
 }

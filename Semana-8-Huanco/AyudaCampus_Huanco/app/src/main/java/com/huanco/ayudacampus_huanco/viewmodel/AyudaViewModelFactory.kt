@@ -26,6 +26,14 @@ class AyudaViewModelFactory(private val repo: AyudaRepository, private val prefe
             @Suppress("UNCHECKED_CAST")
             return TicketDetalleViewModel(repo, requireNotNull(usuario), requireNotNull(ticketId)) as T
         }
+        if (modelClass.isAssignableFrom(PanelViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return PanelViewModel(repo) as T
+        }
+        if (modelClass.isAssignableFrom(BandejaViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return BandejaViewModel(repo) as T
+        }
         throw IllegalArgumentException("ViewModel no registrado: $modelClass")
     }
 }

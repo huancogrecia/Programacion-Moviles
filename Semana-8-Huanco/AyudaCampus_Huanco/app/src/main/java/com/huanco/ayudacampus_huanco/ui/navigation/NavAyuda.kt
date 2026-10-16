@@ -7,6 +7,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.automirrored.outlined.List
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.BarChart
+import androidx.compose.material.icons.automirrored.outlined.Label
+import androidx.compose.material.icons.outlined.Settings
+import com.huanco.ayudacampus_huanco.ui.soporte.PanelScreen
+import com.huanco.ayudacampus_huanco.ui.soporte.BandejaScreen
+import com.huanco.ayudacampus_huanco.viewmodel.PanelViewModel
+import com.huanco.ayudacampus_huanco.viewmodel.BandejaViewModel
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItemDefaults
@@ -105,6 +112,33 @@ fun NavAyuda(vm: CategoriasViewModel, sesion: SesionViewModel) {
                             )
                         }
                     }
+                } else if (perfil == Rol.ADMIN.name && ruta in listOf(Rutas.PANEL, Rutas.BANDEJA, Rutas.CATEGORIAS, Rutas.AJUSTES, Rutas.ATENDER_TICKET)) {
+                    NavigationBar(containerColor = MaterialTheme.colorScheme.surface) {
+                        val destinos = listOf(
+                            Triple(Rutas.PANEL, "Panel", Icons.Outlined.BarChart),
+                            Triple(Rutas.BANDEJA, "Tickets", Icons.AutoMirrored.Outlined.List),
+                            Triple(Rutas.CATEGORIAS, "Categorías", Icons.AutoMirrored.Outlined.Label),
+                            Triple(Rutas.AJUSTES, "Ajustes", Icons.Outlined.Settings)
+                        )
+                        destinos.forEach { (destino, titulo, icono) ->
+                            NavigationBarItem(
+                                selected = ruta == destino || (destino == Rutas.BANDEJA && ruta == Rutas.ATENDER_TICKET),
+                                onClick = {
+                                    nav.navigate(destino) {
+                                        popUpTo(Rutas.PANEL)
+                                        launchSingleTop = true
+                                    }
+                                },
+                                icon = { Icon(icono, contentDescription = null) },
+                                label = { Text(titulo) },
+                                colors = NavigationBarItemDefaults.colors(
+                                    selectedIconColor = MaterialTheme.colorScheme.primary,
+                                    selectedTextColor = MaterialTheme.colorScheme.primary,
+                                    indicatorColor = MaterialTheme.colorScheme.primaryContainer
+                                )
+                            )
+                        }
+                    }
                 }
             }
         ) { contenidoPadding ->
@@ -150,9 +184,20 @@ fun NavAyuda(vm: CategoriasViewModel, sesion: SesionViewModel) {
                     }
                 }
                 composable(Rutas.PANEL) {
-                    Scaffold(topBar = { AppTopBar("Panel") }) { padding ->
-                        Column(Modifier.fillMaxSize().padding(padding)) { }
-                    }
+                    val factory = AyudaViewModelFactory((context.applicationContext as AyudaApp).repository, PreferenciasStore(context))
+                    val panel: PanelViewModel = viewModel(factory = factory)
+                    PanelScreen(panel, onVerTickets = { nav.navigate(Rutas.BANDEJA) { launchSingleTop = true } })
+                }
+                composable(Rutas.BANDEJA) {
+                    val factory = AyudaViewModelFactory((context.applicationContext as AyudaApp).repository, PreferenciasStore(context))
+                    val bandeja: BandejaViewModel = viewModel(factory = factory)
+                    BandejaScreen(bandeja, onAtender = { nav.navigate("atender_ticket/$it") })
+                }
+                composable(Rutas.ATENDER_TICKET, arguments = listOf(navArgument("id") { type = NavType.IntType })) { entradaAtender ->
+                    Text("Atender ticket #${entradaAtender.arguments?.getInt("id")}", Modifier.padding(20.dp), style = MaterialTheme.typography.headlineMedium)
+                }
+                composable(Rutas.AJUSTES) {
+                    Text("Ajustes", Modifier.padding(20.dp), style = MaterialTheme.typography.headlineMedium)
                 }
                 composable(Rutas.CATEGORIAS) {
                     Scaffold(topBar = { AppTopBar("Categorías") }) { padding ->

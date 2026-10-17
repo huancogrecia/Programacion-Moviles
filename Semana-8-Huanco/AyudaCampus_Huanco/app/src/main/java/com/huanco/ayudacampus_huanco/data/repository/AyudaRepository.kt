@@ -31,4 +31,5 @@ suspend fun agregarComentario(ticketId: Int, autor: Usuario, texto: String)
 fun observarCantidadPorEstado(estado: EstadoTicket): Flow<Int>
 fun observarCantidadPorCategoria(): Flow<List<ConteoCategoria>>
 fun observarAltasSinAtender(limite: Long): Flow<Int>
+fun observarTiempoPromedioResolucion(): Flow<Double?>
 }

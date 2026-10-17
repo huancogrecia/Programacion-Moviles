@@ -35,6 +35,7 @@ fun PanelScreen(vm: PanelViewModel, onVerTickets: () -> Unit) {
     val porEstado by vm.porEstado.collectAsStateWithLifecycle()
     val porCategoria by vm.porCategoria.collectAsStateWithLifecycle()
     val altas by vm.altasSinAtender.collectAsStateWithLifecycle()
+    val tiempoPromedio by vm.tiempoPromedioResolucion.collectAsStateWithLifecycle()
     LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(20.dp), verticalArrangement = Arrangement.spacedBy(20.dp)) {
         item {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -55,6 +56,17 @@ fun PanelScreen(vm: PanelViewModel, onVerTickets: () -> Unit) {
                             Text(titulo, style = MaterialTheme.typography.labelMedium)
                         }
                     }
+                }
+            }
+        }
+        item {
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLowest)
+            ) {
+                Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Text("Tiempo promedio de resolución", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                    Text(tiempoPromedio, style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
                 }
             }
         }

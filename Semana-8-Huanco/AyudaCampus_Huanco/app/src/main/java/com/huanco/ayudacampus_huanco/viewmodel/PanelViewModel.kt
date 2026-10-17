@@ -36,4 +36,14 @@ class PanelViewModel(repo: AyudaRepository) : ViewModel() {
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
     val altasSinAtender = repo.observarAltasSinAtender(System.currentTimeMillis() - 3600 * 1000L)
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
+    val tiempoPromedioResolucion = repo.observarTiempoPromedioResolucion().map { promedio ->
+        if (promedio == null) {
+            "Sin tickets cerrados"
+        } else {
+            val totalMinutos = (promedio / 60000).toLong()
+            val horas = totalMinutos / 60
+            val minutos = totalMinutos % 60
+            if (horas > 0) "${horas}h ${minutos}min" else "${minutos}min"
+        }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "Sin tickets cerrados")
 }

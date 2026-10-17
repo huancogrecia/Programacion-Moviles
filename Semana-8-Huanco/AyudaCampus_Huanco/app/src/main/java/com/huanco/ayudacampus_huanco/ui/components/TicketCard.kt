@@ -33,7 +33,8 @@ fun TicketCard(
     fecha: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    nombreCliente: String? = null
+    nombreCliente: String? = null,
+    slaTexto: String? = null
 ) {
     val colorPrioridad = when (prioridad) {
         Prioridad.ALTA -> PrioridadAlta
@@ -82,6 +83,10 @@ fun TicketCard(
                 }
                 if (!nombreCliente.isNullOrBlank()) {
                     Text(nombreCliente, style = MaterialTheme.typography.bodySmall)
+                }
+                if (!slaTexto.isNullOrBlank()) {
+                    Text(if (slaTexto == "SLA vencido") slaTexto else "SLA: $slaTexto", style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     EstadoChip(estado)

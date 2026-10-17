@@ -55,6 +55,7 @@ fun DetalleTicketScreen(vm: TicketDetalleViewModel, onVolver: () -> Unit) {
     val comentarioFinal by vm.comentarioFinal.collectAsStateWithLifecycle()
     val procesando by vm.procesando.collectAsStateWithLifecycle()
     val error by vm.error.collectAsStateWithLifecycle()
+    val slaTexto by vm.slaTexto.collectAsStateWithLifecycle()
     var calificacion by rememberSaveable { mutableIntStateOf(0) }
     val actual = detalle?.takeIf { it.ticket.clienteId == vm.usuario.id }
     LazyColumn(
@@ -84,6 +85,9 @@ fun DetalleTicketScreen(vm: TicketDetalleViewModel, onVolver: () -> Unit) {
                             PrioridadChip(Prioridad.valueOf(ticket.prioridad))
                         }
                         Text("${actual.categoria.nombre} · ${ticket.ubicacion}", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        if (slaTexto.isNotBlank()) {
+                            Text(if (slaTexto == "SLA vencido") slaTexto else "SLA: $slaTexto", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        }
                         Text(ticket.descripcion)
                     }
                 }

@@ -33,6 +33,9 @@ class AtenderViewModel(
             ultimaPrioridad = actual.prioridad
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+    val slaTexto = combine(ticket, relojMinutoFlow()) { detalle, now ->
+        detalle?.ticket?.let { calcularSlaTexto(it, now) } ?: ""
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
     private val _respuesta = MutableStateFlow("")
     val respuesta = _respuesta.asStateFlow()
     private val _procesando = MutableStateFlow(false)

@@ -46,7 +46,8 @@ fun BandejaScreen(vm: BandejaViewModel, onAtender: (Int) -> Unit) {
             Text("No hay tickets con este filtro", Modifier.padding(20.dp), color = MaterialTheme.colorScheme.onSurfaceVariant)
         } else {
             LazyColumn(contentPadding = PaddingValues(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                items(tickets, key = { it.ticket.id }) { detalle ->
+                items(tickets, key = { it.detalle.ticket.id }) { item ->
+                    val detalle = item.detalle
                     val ticket = detalle.ticket
                     val minutos = ((System.currentTimeMillis() - ticket.fecha) / 60000).coerceAtLeast(0)
                     val fecha = when {
@@ -64,7 +65,8 @@ fun BandejaScreen(vm: BandejaViewModel, onAtender: (Int) -> Unit) {
                         prioridad = Prioridad.valueOf(ticket.prioridad),
                         fecha = fecha,
                         onClick = { onAtender(ticket.id) },
-                        nombreCliente = detalle.cliente.nombre
+                        nombreCliente = detalle.cliente.nombre,
+                        slaTexto = item.slaTexto
                     )
                 }
             }

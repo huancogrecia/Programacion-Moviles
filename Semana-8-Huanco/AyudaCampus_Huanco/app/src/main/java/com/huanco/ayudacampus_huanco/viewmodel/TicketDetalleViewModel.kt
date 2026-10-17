@@ -9,6 +9,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
@@ -23,6 +24,9 @@ class TicketDetalleViewModel(
     val cargando = _cargando.asStateFlow()
     val ticket = repo.observarTicket(ticketId).onEach { _cargando.value = false }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+    val slaTexto = combine(ticket, relojMinutoFlow()) { detalle, now ->
+        detalle?.ticket?.let { calcularSlaTexto(it, now) } ?: ""
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
     private val _textoComentario = MutableStateFlow("")
     val textoComentario = _textoComentario.asStateFlow()
     private val _comentarioFinal = MutableStateFlow("")

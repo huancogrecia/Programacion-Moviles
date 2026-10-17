@@ -20,13 +20,13 @@ class MisTicketsViewModel(repo: AyudaRepository, val usuario: Usuario) : ViewMod
     private val _textoBusqueda = MutableStateFlow("")
     val textoBusqueda = _textoBusqueda.asStateFlow()
 
-    val tickets = combine(ticketsUsuario, estadoSeleccionado, textoBusqueda) { lista, estado, texto ->
+    val tickets = combine(ticketsUsuario, estadoSeleccionado, textoBusqueda, relojMinutoFlow()) { lista, estado, texto, now ->
         val busqueda = texto.trim().removePrefix("#")
         lista.filter {
             (estado == null || it.ticket.estado == estado.name) &&
                 (busqueda.isEmpty() || it.ticket.titulo.contains(busqueda, ignoreCase = true) ||
                     it.ticket.id.toString().contains(busqueda))
-        }
+        }.map { TicketUiItem(it, calcularSlaTexto(it.ticket, now)) }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     val cantidadAbiertos = ticketsUsuario.map { lista ->

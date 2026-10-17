@@ -80,7 +80,8 @@ fun MisTicketsScreen(vm: MisTicketsViewModel, onDetalle: (Int) -> Unit, onNuevo:
                 Text("No tienes tickets aquí", Modifier.padding(20.dp), color = MaterialTheme.colorScheme.onSurfaceVariant)
             } else {
                 LazyColumn(contentPadding = PaddingValues(start = 20.dp, end = 20.dp, bottom = 96.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    items(tickets, key = { it.ticket.id }) { detalle ->
+                    items(tickets, key = { it.detalle.ticket.id }) { item ->
+                        val detalle = item.detalle
                         val ticket = detalle.ticket
                         val horas = ((System.currentTimeMillis() - ticket.fecha) / 3600000).coerceAtLeast(0)
                         val fecha = when {
@@ -97,7 +98,8 @@ fun MisTicketsScreen(vm: MisTicketsViewModel, onDetalle: (Int) -> Unit, onNuevo:
                             estado = EstadoTicket.valueOf(ticket.estado),
                             prioridad = Prioridad.valueOf(ticket.prioridad),
                             fecha = fecha,
-                            onClick = { onDetalle(ticket.id) }
+                            onClick = { onDetalle(ticket.id) },
+                            slaTexto = item.slaTexto
                         )
                     }
                 }

@@ -31,6 +31,7 @@ fun AtenderTicketScreen(vm: AtenderViewModel, onVolver: () -> Unit) {
     val procesando by vm.procesando.collectAsStateWithLifecycle()
     val error by vm.error.collectAsStateWithLifecycle()
     val mensaje by vm.mensaje.collectAsStateWithLifecycle()
+    val slaTexto by vm.slaTexto.collectAsStateWithLifecycle()
     val actual = detalle
     LazyColumn(
         modifier = Modifier.fillMaxSize().imePadding(),
@@ -56,6 +57,9 @@ fun AtenderTicketScreen(vm: AtenderViewModel, onVolver: () -> Unit) {
                         Text(actual.cliente.nombre)
                         Text(actual.cliente.correo, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         Text("${actual.categoria.nombre} · ${actual.ticket.ubicacion}")
+                        if (slaTexto.isNotBlank()) {
+                            Text(if (slaTexto == "SLA vencido") slaTexto else "SLA: $slaTexto", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        }
                         Text(actual.ticket.descripcion)
                     }
                 }

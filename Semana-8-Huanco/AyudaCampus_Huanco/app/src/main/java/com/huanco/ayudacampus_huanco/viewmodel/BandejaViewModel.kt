@@ -13,8 +13,9 @@ import kotlinx.coroutines.flow.stateIn
 class BandejaViewModel(repo: AyudaRepository) : ViewModel() {
     private val _estadoSeleccionado = MutableStateFlow<EstadoTicket?>(null)
     val estadoSeleccionado = _estadoSeleccionado.asStateFlow()
-    val tickets = combine(repo.observarTodosLosTickets(), estadoSeleccionado) { lista, estado ->
+    val tickets = combine(repo.observarTodosLosTickets(), estadoSeleccionado, relojMinutoFlow()) { lista, estado, now ->
         lista.filter { estado == null || it.ticket.estado == estado.name }
+            .map { TicketUiItem(it, calcularSlaTexto(it.ticket, now)) }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     fun seleccionarEstado(estado: EstadoTicket?) {

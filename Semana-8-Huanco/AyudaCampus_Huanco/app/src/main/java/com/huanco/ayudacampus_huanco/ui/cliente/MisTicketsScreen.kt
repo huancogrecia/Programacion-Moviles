@@ -35,7 +35,7 @@ import com.huanco.ayudacampus_huanco.ui.components.TicketCard
 import com.huanco.ayudacampus_huanco.viewmodel.MisTicketsViewModel
 
 @Composable
-fun MisTicketsScreen(vm: MisTicketsViewModel, onDetalle: (Int) -> Unit, onNuevo: () -> Unit) {
+fun MisTicketsScreen(vm: MisTicketsViewModel, onDetalle: (Int) -> Unit, onNuevo: () -> Unit, recibirTickets: Boolean) {
     val tickets by vm.tickets.collectAsStateWithLifecycle()
     val abiertos by vm.cantidadAbiertos.collectAsStateWithLifecycle()
     val estado by vm.estadoSeleccionado.collectAsStateWithLifecycle()
@@ -43,7 +43,7 @@ fun MisTicketsScreen(vm: MisTicketsViewModel, onDetalle: (Int) -> Unit, onNuevo:
     val nombre = vm.usuario.nombre.split(" ").take(2).joinToString(" ")
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(onClick = onNuevo, containerColor = MaterialTheme.colorScheme.primary, contentColor = MaterialTheme.colorScheme.onPrimary) {
+            if (recibirTickets) FloatingActionButton(onClick = onNuevo, containerColor = MaterialTheme.colorScheme.primary, contentColor = MaterialTheme.colorScheme.onPrimary) {
                 Icon(Icons.Outlined.Add, contentDescription = "Crear ticket")
             }
         }
@@ -53,6 +53,7 @@ fun MisTicketsScreen(vm: MisTicketsViewModel, onDetalle: (Int) -> Unit, onNuevo:
                 Text("Mis tickets", style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.Bold)
                 Spacer(Modifier.height(8.dp))
                 Text("Hola, $nombre · $abiertos abiertos", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                if (!recibirTickets) Text("Mesa de ayuda cerrada", color = MaterialTheme.colorScheme.error)
                 Spacer(Modifier.height(20.dp))
                 AyudaTextField(busqueda, vm::buscar, "Buscar por título o número")
                 Spacer(Modifier.height(12.dp))

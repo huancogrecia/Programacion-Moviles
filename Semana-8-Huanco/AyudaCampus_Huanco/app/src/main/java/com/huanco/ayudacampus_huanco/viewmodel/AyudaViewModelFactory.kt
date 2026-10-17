@@ -20,7 +20,7 @@ class AyudaViewModelFactory(private val repo: AyudaRepository, private val prefe
         }
         if (modelClass.isAssignableFrom(NuevoTicketViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return NuevoTicketViewModel(repo, requireNotNull(usuario)) as T
+            return NuevoTicketViewModel(repo, requireNotNull(usuario), preferencias) as T
         }
         if (modelClass.isAssignableFrom(TicketDetalleViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")

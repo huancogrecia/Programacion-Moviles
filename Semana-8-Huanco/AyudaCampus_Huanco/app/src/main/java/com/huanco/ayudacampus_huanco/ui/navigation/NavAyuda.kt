@@ -51,6 +51,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.huanco.ayudacampus_huanco.model.Rol
+import com.huanco.ayudacampus_huanco.ui.cliente.PerfilScreen
+import com.huanco.ayudacampus_huanco.ui.soporte.AjustesScreen
 import com.huanco.ayudacampus_huanco.ui.cliente.LoginScreen
 import com.huanco.ayudacampus_huanco.ui.cliente.SplashScreen
 import com.huanco.ayudacampus_huanco.ui.components.AppTopBar
@@ -69,6 +71,7 @@ fun NavAyuda(vm: CategoriasViewModel, sesion: SesionViewModel) {
     val perfil by sesion.perfilActivo.collectAsStateWithLifecycle()
     val usuarioId by sesion.usuarioId.collectAsStateWithLifecycle()
     val cargada by sesion.sesionCargada.collectAsStateWithLifecycle()
+    val recibirTickets by sesion.recibirTickets.collectAsStateWithLifecycle()
     val modoOscuro by sesion.modoOscuro.collectAsStateWithLifecycle()
     var rolSeleccionado by rememberSaveable { mutableStateOf(Rol.CLIENTE.name) }
     var splashTerminado by rememberSaveable { mutableStateOf(false) }
@@ -160,7 +163,7 @@ fun NavAyuda(vm: CategoriasViewModel, sesion: SesionViewModel) {
                     usuario?.let { actual ->
                         val factory = AyudaViewModelFactory((context.applicationContext as AyudaApp).repository, PreferenciasStore(context), actual)
                         val misTickets: MisTicketsViewModel = viewModel(key = "mis_tickets_${actual.id}", factory = factory)
-                        MisTicketsScreen(misTickets, onDetalle = { nav.navigate("detalle_ticket/$it") }, onNuevo = { nav.navigate(Rutas.NUEVO_TICKET) })
+                        MisTicketsScreen(misTickets, onDetalle = { nav.navigate("detalle_ticket/$it") }, onNuevo = { nav.navigate(Rutas.NUEVO_TICKET) }, recibirTickets = recibirTickets)
                     }
                 }
                 composable(Rutas.NUEVO_TICKET) {
@@ -176,7 +179,7 @@ fun NavAyuda(vm: CategoriasViewModel, sesion: SesionViewModel) {
                     }
                 }
                 composable(Rutas.PERFIL) {
-                    Text("Perfil", Modifier.padding(20.dp), style = MaterialTheme.typography.headlineMedium)
+                    PerfilScreen(sesion)
                 }
                 composable(Rutas.DETALLE_TICKET, arguments = listOf(navArgument("id") { type = NavType.IntType })) { entradaDetalle ->
                     usuario?.let { actual ->
@@ -205,7 +208,7 @@ fun NavAyuda(vm: CategoriasViewModel, sesion: SesionViewModel) {
                     }
                 }
                 composable(Rutas.AJUSTES) {
-                    Text("Ajustes", Modifier.padding(20.dp), style = MaterialTheme.typography.headlineMedium)
+                    AjustesScreen(sesion)
                 }
                 composable(Rutas.FORMULARIO_CATEGORIA, arguments = listOf(navArgument("id") { type = NavType.IntType; defaultValue = 0 })) { entradaCategoria ->
                     val id = entradaCategoria.arguments?.getInt("id")?.takeIf { it > 0 }

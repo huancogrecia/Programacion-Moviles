@@ -47,6 +47,7 @@ import com.huanco.ayudacampus_huanco.viewmodel.NuevoTicketViewModel
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun NuevoTicketScreen(vm: NuevoTicketViewModel, onVolver: () -> Unit, onEnviado: () -> Unit) {
+    val recibirTickets by vm.recibirTickets.collectAsStateWithLifecycle()
     val categorias by vm.categorias.collectAsStateWithLifecycle()
     val categoriaId by vm.categoriaId.collectAsStateWithLifecycle()
     val titulo by vm.titulo.collectAsStateWithLifecycle()
@@ -64,12 +65,16 @@ fun NuevoTicketScreen(vm: NuevoTicketViewModel, onVolver: () -> Unit, onEnviado:
     }
     Column(Modifier.fillMaxSize().imePadding().verticalScroll(rememberScrollState()).padding(20.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            IconButton(onClick = onVolver, enabled = !enviando) {
+            IconButton(onClick = onVolver, enabled = !enviando && recibirTickets) {
                 Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = "Volver a Mis tickets")
             }
             Text("Nuevo ticket", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
         }
         Spacer(Modifier.height(20.dp))
+        if (!recibirTickets) {
+            Text("Mesa de ayuda cerrada", color = MaterialTheme.colorScheme.error)
+            Spacer(Modifier.height(16.dp))
+        }
         Text("Categoría", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
         FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             categorias.forEach { categoria ->
@@ -84,7 +89,7 @@ fun NuevoTicketScreen(vm: NuevoTicketViewModel, onVolver: () -> Unit, onEnviado:
                 FilterChip(
                     selected = categoriaId == categoria.id,
                     onClick = { vm.seleccionarCategoria(categoria.id) },
-                    enabled = !enviando,
+                    enabled = !enviando && recibirTickets,
                     label = { Text(categoria.nombre) },
                     leadingIcon = { Icon(icono, contentDescription = null) },
                     colors = FilterChipDefaults.filterChipColors(
@@ -99,9 +104,9 @@ fun NuevoTicketScreen(vm: NuevoTicketViewModel, onVolver: () -> Unit, onEnviado:
             Text(errorCategoria.orEmpty(), color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
         }
         Spacer(Modifier.height(12.dp))
-        AyudaTextField(titulo, vm::cambiarTitulo, "Título", error = errorTitulo, habilitado = !enviando)
+        AyudaTextField(titulo, vm::cambiarTitulo, "Título", error = errorTitulo, habilitado = !enviando && recibirTickets)
         Spacer(Modifier.height(12.dp))
-        AyudaTextField(ubicacion, vm::cambiarUbicacion, "Ubicación", habilitado = !enviando)
+        AyudaTextField(ubicacion, vm::cambiarUbicacion, "Ubicación", habilitado = !enviando && recibirTickets)
         Spacer(Modifier.height(16.dp))
         Text("Prioridad", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -114,7 +119,7 @@ fun NuevoTicketScreen(vm: NuevoTicketViewModel, onVolver: () -> Unit, onEnviado:
                 FilterChip(
                     selected = prioridad == valor,
                     onClick = { vm.seleccionarPrioridad(valor) },
-                    enabled = !enviando,
+                    enabled = !enviando && recibirTickets,
                     modifier = Modifier.weight(1f),
                     label = { Text(etiqueta) },
                     colors = FilterChipDefaults.filterChipColors(
@@ -125,13 +130,13 @@ fun NuevoTicketScreen(vm: NuevoTicketViewModel, onVolver: () -> Unit, onEnviado:
             }
         }
         Spacer(Modifier.height(16.dp))
-        AyudaTextField(descripcion, vm::cambiarDescripcion, "Descripción", modifier = Modifier.heightIn(min = 140.dp), error = errorDescripcion, habilitado = !enviando, unaLinea = false)
+        AyudaTextField(descripcion, vm::cambiarDescripcion, "Descripción", modifier = Modifier.heightIn(min = 140.dp), error = errorDescripcion, habilitado = !enviando && recibirTickets, unaLinea = false)
         if (errorEnvio != null) {
             Spacer(Modifier.height(12.dp))
             Text(errorEnvio.orEmpty(), color = MaterialTheme.colorScheme.error)
         }
         Spacer(Modifier.height(24.dp))
-        AyudaButton("Enviar ticket", vm::enviar, modifier = Modifier.height(56.dp), habilitado = !enviando && !enviado)
+        AyudaButton("Enviar ticket", vm::enviar, modifier = Modifier.height(56.dp), habilitado = !enviando && recibirTickets && !enviado)
         Spacer(Modifier.height(12.dp))
     }
 }

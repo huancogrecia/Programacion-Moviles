@@ -6,6 +6,10 @@ import com.huanco.ayudacampus_huanco.data.local.entity.Usuario
 import com.huanco.ayudacampus_huanco.data.prefs.PreferenciasStore
 import com.huanco.ayudacampus_huanco.data.repository.AyudaRepository
 import com.huanco.ayudacampus_huanco.model.Rol
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,6 +17,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class SesionViewModel(
     private val repo: AyudaRepository,
     private val preferencias: PreferenciasStore
@@ -30,6 +35,70 @@ class SesionViewModel(
     private val _ingresando = MutableStateFlow(false)
     val ingresando = _ingresando.asStateFlow()
     val modoOscuro = preferencias.modoOscuro.stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
+    val notificaciones = preferencias.notificaciones.stateIn(viewModelScope, SharingStarted.Eagerly, true)
+    val recibirTickets = preferencias.recibirTickets.stateIn(viewModelScope, SharingStarted.Eagerly, false)
+    val ticketsUsuario = usuarioActual.flatMapLatest { usuario ->
+        if (usuario?.rol == Rol.CLIENTE.name) repo.observarTicketsCliente(usuario.id) else flowOf(emptyList())
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    fun guardarModoOscuro(valor: Boolean) = actualizar { preferencias.guardarModoOscuro(valor) }
+
+    fun guardarNotificaciones(valor: Boolean) = actualizar { preferencias.guardarNotificaciones(valor) }
+
+    fun guardarRecibirTickets(valor: Boolean) {
+        if (_usuarioActual.value?.rol == Rol.ADMIN.name) actualizar { preferencias.guardarRecibirTickets(valor) }
+    }
+
+    fun cambiarPerfil() {
+        val actual = _usuarioActual.value ?: return
+        if (_ingresando.value) return
+        _ingresando.value = true
+        actualizar {
+            try {
+                val otroRol = if (actual.rol == Rol.CLIENTE.name) Rol.ADMIN else Rol.CLIENTE
+                val otro = repo.obtenerUsuarioPorRol(otroRol)
+                if (otro == null) {
+                    _error.value = "No se encontró el usuario del otro perfil"
+                } else {
+                    preferencias.guardarSesion(otro.rol, otro.id)
+                    _usuarioActual.value = otro
+                    _usuarioId.value = otro.id
+                    _perfilActivo.value = otro.rol
+                }
+            } finally {
+                _ingresando.value = false
+            }
+        }
+    }
+
+    fun cerrarSesion() {
+        if (_ingresando.value) return
+        _ingresando.value = true
+        actualizar {
+            try {
+                preferencias.cerrarSesion()
+                _usuarioActual.value = null
+                _usuarioId.value = 0
+                _perfilActivo.value = ""
+            } finally {
+                _ingresando.value = false
+            }
+        }
+    }
+
+    private fun actualizar(accion: suspend () -> Unit) {
+        _error.value = null
+        viewModelScope.launch {
+            try {
+                accion()
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                _error.value = "No se pudo guardar el cambio. Inténtalo nuevamente"
+            }
+        }
+    }
 
     init {
         viewModelScope.launch {

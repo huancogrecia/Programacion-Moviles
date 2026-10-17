@@ -9,6 +9,7 @@ import com.huanco.ayudacampus_huanco.data.local.relation.TicketConDetalle
 import com.huanco.ayudacampus_huanco.model.ConteoCategoria
 import com.huanco.ayudacampus_huanco.model.EstadoTicket
 import com.huanco.ayudacampus_huanco.model.Prioridad
+import com.huanco.ayudacampus_huanco.model.Rol
 import kotlinx.coroutines.flow.Flow
 
 class AyudaRepositoryRoom(private val db: AyudaDatabase) : AyudaRepository {
@@ -16,6 +17,8 @@ class AyudaRepositoryRoom(private val db: AyudaDatabase) : AyudaRepository {
         db.usuarioDao().login(correo, clave)
 
     override suspend fun obtenerUsuario(id: Int): Usuario? = db.usuarioDao().obtenerPorId(id)
+
+    override suspend fun obtenerUsuarioPorRol(rol: Rol): Usuario? = db.usuarioDao().obtenerPorRol(rol.name)
 
     override fun observarCategorias(): Flow<List<Categoria>> = db.categoriaDao().observarTodas()
 

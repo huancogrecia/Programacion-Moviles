@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.huanco.ayudacampus_huanco.data.local.entity.Usuario
 import com.huanco.ayudacampus_huanco.data.repository.AyudaRepository
+import com.huanco.ayudacampus_huanco.data.prefs.PreferenciasStore
 import com.huanco.ayudacampus_huanco.model.Prioridad
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,7 +14,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class NuevoTicketViewModel(private val repo: AyudaRepository, private val usuario: Usuario) : ViewModel() {
+class NuevoTicketViewModel(private val repo: AyudaRepository, private val usuario: Usuario, private val preferencias: PreferenciasStore) : ViewModel() {
+    val recibirTickets = preferencias.recibirTickets.stateIn(viewModelScope, SharingStarted.Eagerly, false)
     val categorias = repo.observarCategoriasActivas()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
     private val _categoriaId = MutableStateFlow<Int?>(null)
@@ -77,6 +79,10 @@ class NuevoTicketViewModel(private val repo: AyudaRepository, private val usuari
         _enviando.value = true
         viewModelScope.launch {
             try {
+                if (!preferencias.recibirTickets.first()) {
+                    _errorEnvio.value = "Mesa de ayuda cerrada"
+                    return@launch
+                }
                 val activas = repo.observarCategoriasActivas().first()
                 if (activas.none { it.id == categoriaId }) {
                     _errorCategoria.value = "Selecciona una categoría activa"

@@ -34,6 +34,10 @@ class AyudaViewModelFactory(private val repo: AyudaRepository, private val prefe
             @Suppress("UNCHECKED_CAST")
             return BandejaViewModel(repo) as T
         }
+        if (modelClass.isAssignableFrom(AtenderViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return AtenderViewModel(repo, requireNotNull(usuario), requireNotNull(ticketId)) as T
+        }
         throw IllegalArgumentException("ViewModel no registrado: $modelClass")
     }
 }

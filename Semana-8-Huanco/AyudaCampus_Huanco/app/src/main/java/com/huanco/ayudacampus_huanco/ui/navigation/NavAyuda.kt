@@ -10,6 +10,9 @@ import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.BarChart
 import androidx.compose.material.icons.automirrored.outlined.Label
 import androidx.compose.material.icons.outlined.Settings
+import com.huanco.ayudacampus_huanco.ui.soporte.AtenderTicketScreen
+import com.huanco.ayudacampus_huanco.ui.soporte.FormularioCategoriaScreen
+import com.huanco.ayudacampus_huanco.viewmodel.AtenderViewModel
 import com.huanco.ayudacampus_huanco.ui.soporte.PanelScreen
 import com.huanco.ayudacampus_huanco.ui.soporte.BandejaScreen
 import com.huanco.ayudacampus_huanco.viewmodel.PanelViewModel
@@ -194,16 +197,31 @@ fun NavAyuda(vm: CategoriasViewModel, sesion: SesionViewModel) {
                     BandejaScreen(bandeja, onAtender = { nav.navigate("atender_ticket/$it") })
                 }
                 composable(Rutas.ATENDER_TICKET, arguments = listOf(navArgument("id") { type = NavType.IntType })) { entradaAtender ->
-                    Text("Atender ticket #${entradaAtender.arguments?.getInt("id")}", Modifier.padding(20.dp), style = MaterialTheme.typography.headlineMedium)
+                    usuario?.let { actual ->
+                        val id = requireNotNull(entradaAtender.arguments).getInt("id")
+                        val factory = AyudaViewModelFactory((context.applicationContext as AyudaApp).repository, PreferenciasStore(context), actual, id)
+                        val atender: AtenderViewModel = viewModel(key = "atender_${actual.id}_$id", factory = factory)
+                        AtenderTicketScreen(atender, onVolver = { nav.popBackStack() })
+                    }
                 }
                 composable(Rutas.AJUSTES) {
                     Text("Ajustes", Modifier.padding(20.dp), style = MaterialTheme.typography.headlineMedium)
+                }
+                composable(Rutas.FORMULARIO_CATEGORIA, arguments = listOf(navArgument("id") { type = NavType.IntType; defaultValue = 0 })) { entradaCategoria ->
+                    val id = entradaCategoria.arguments?.getInt("id")?.takeIf { it > 0 }
+                    FormularioCategoriaScreen(vm, id, onVolver = { nav.popBackStack() })
                 }
                 composable(Rutas.CATEGORIAS) {
                     Scaffold(topBar = { AppTopBar("Categorías") }) { padding ->
                         Column(Modifier.fillMaxSize().padding(padding)) {
                             Text("Administra las categorías de atención", Modifier.padding(horizontal = 20.dp, vertical = 12.dp), color = MaterialTheme.colorScheme.onSurfaceVariant)
-                            CategoriasScreen(vm, onEditar = { })
+                            CategoriasScreen(vm, onEditar = {
+                                vm.prepararFormulario()
+                                nav.navigate("formulario_categoria?id=$it")
+                            }, onNueva = {
+                                vm.prepararFormulario()
+                                nav.navigate("formulario_categoria")
+                            })
                         }
                     }
                 }

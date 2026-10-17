@@ -10,5 +10,6 @@ object Rutas {
     const val BANDEJA = "bandeja"
     const val ATENDER_TICKET = "atender_ticket/{id}"
     const val AJUSTES = "ajustes"
+    const val FORMULARIO_CATEGORIA = "formulario_categoria?id={id}"
     const val CATEGORIAS = "categorias"
 }
